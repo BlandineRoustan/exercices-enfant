@@ -1,0 +1,1 @@
+Dépose ici arrondie.woff2 (police arrondie libre, ex. Nunito ou Quicksand) pour une police identique sur tous les appareils. Facultatif.

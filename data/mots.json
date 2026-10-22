@@ -1,0 +1,114 @@
+{
+  "_notes": [
+    "Image d'un mot : images/<mot sans accent>.webp (ex. images/chat.webp). Les 2 mauvaises images sont tirées au hasard parmi les autres mots disponibles.",
+    "Chaque graphème d'un mot = [texte, type, son, numéro de syllabe]. Types : voyelle, consonne, digramme, trigramme, muette. Son = null pour une lettre muette.",
+    "Un mot est proposé si tous ses graphèmes NON muets sont maîtrisés (identifiés par texte + son, voir 'sons').",
+    "Les sons sont listés dans un ordre de progression PROPOSÉ : à relire et corriger selon ta méthode.",
+    "Champ emoji : image de secours tant que images/<mot>.webp n'existe pas ; null = le mot n'est pas utilisé dans les exercices tant qu'il n'a pas d'image.",
+    "Champ classe d'un son : c = consonne, v = voyelle (sert à fabriquer les syllabes ; ch et gn sont des consonnes).",
+    "Le niveau (1 à 4) ne sert qu'au tri et aux préréglages ; le filtre principal reste 'sons maîtrisés'."
+  ],
+
+  "attribution": "Pictogrammes : Sergio Palao / ARASAAC (arasaac.org), Gouvernement d'Aragon, licence CC BY-NC-SA",
+
+  "affichage": {
+    "casse": "capitales",
+    "police": "arrondie",
+    "options_v2": ["script", "cursive"],
+    "mots": {
+      "voyelle": "#000000",
+      "consonne": "#000000",
+      "muette": "#9E9E9E",
+      "digramme": ["#1B7F3A", "#6FBF73"],
+      "trigramme": ["#1B7F3A", "#6FBF73"]
+    },
+    "sons_et_syllabes": {
+      "voyelle": "#D32F2F",
+      "consonne": "#1976D2",
+      "digramme": ["#1B7F3A", "#6FBF73"],
+      "trigramme": ["#1B7F3A", "#6FBF73"]
+    },
+    "regle_verts": "Deux digrammes/trigrammes consécutifs alternent entre les deux nuances de vert (calculé par l'appli, pas stocké dans les mots)."
+  },
+
+  "parametres": {
+    "sons_maitrises": [],
+    "mot_disponible_si": "tous les graphèmes non muets sont maîtrisés",
+    "exercice_sons": { "images_par_question": 3, "bonnes_reponses_possibles": [1, 2] },
+    "exercice_syllabes": { "patrons": ["CV", "VC", "CVC"], "generation": "à partir des sons maîtrisés, CV d'abord" },
+    "exercice_mots": { "images_par_question": 3, "filtres_optionnels": ["nbSyllabes", "graphie", "niveau"] }
+  },
+
+  "sons": [
+    { "id": "a",   "texte": "a",   "type": "voyelle",   "son": "a", "classe": "v" },
+    { "id": "i",   "texte": "i",   "type": "voyelle",   "son": "i", "classe": "v" },
+    { "id": "o",   "texte": "o",   "type": "voyelle",   "son": "o", "classe": "v" },
+    { "id": "u",   "texte": "u",   "type": "voyelle",   "son": "y", "classe": "v" },
+    { "id": "é",   "texte": "é",   "type": "voyelle",   "son": "e", "classe": "v" },
+    { "id": "m",   "texte": "m",   "type": "consonne",  "son": "m", "classe": "c" },
+    { "id": "l",   "texte": "l",   "type": "consonne",  "son": "l", "classe": "c" },
+    { "id": "r",   "texte": "r",   "type": "consonne",  "son": "r", "classe": "c" },
+    { "id": "s",   "texte": "s",   "type": "consonne",  "son": "s", "classe": "c" },
+    { "id": "t",   "texte": "t",   "type": "consonne",  "son": "t", "classe": "c" },
+    { "id": "p",   "texte": "p",   "type": "consonne",  "son": "p", "classe": "c" },
+    { "id": "b",   "texte": "b",   "type": "consonne",  "son": "b", "classe": "c" },
+    { "id": "d",   "texte": "d",   "type": "consonne",  "son": "d", "classe": "c" },
+    { "id": "v",   "texte": "v",   "type": "consonne",  "son": "v", "classe": "c" },
+    { "id": "f",   "texte": "f",   "type": "consonne",  "son": "f", "classe": "c" },
+    { "id": "n",   "texte": "n",   "type": "consonne",  "son": "n", "classe": "c" },
+    { "id": "c",   "texte": "c",   "type": "consonne",  "son": "k", "classe": "c" },
+    { "id": "j",   "texte": "j",   "type": "consonne",  "son": "ʒ", "classe": "c" },
+    { "id": "s-z", "texte": "s",   "type": "consonne",  "son": "z", "classe": "c" },
+    { "id": "e",   "texte": "e",   "type": "voyelle",   "son": "ə", "classe": "v" },
+    { "id": "ou",  "texte": "ou",  "type": "digramme",  "son": "u", "classe": "v" },
+    { "id": "ch",  "texte": "ch",  "type": "digramme",  "son": "ʃ", "classe": "c" },
+    { "id": "on",  "texte": "on",  "type": "digramme",  "son": "ɔ̃", "classe": "v" },
+    { "id": "an",  "texte": "an",  "type": "digramme",  "son": "ɑ̃", "classe": "v" },
+    { "id": "am",  "texte": "am",  "type": "digramme",  "son": "ɑ̃", "classe": "v" },
+    { "id": "in",  "texte": "in",  "type": "digramme",  "son": "ɛ̃", "classe": "v" },
+    { "id": "ai",  "texte": "ai",  "type": "digramme",  "son": "ɛ", "classe": "v" },
+    { "id": "oi",  "texte": "oi",  "type": "digramme",  "son": "wa", "classe": "v" },
+    { "id": "gn",  "texte": "gn",  "type": "digramme",  "son": "ɲ", "classe": "c" },
+    { "id": "ain", "texte": "ain", "type": "trigramme", "son": "ɛ̃", "classe": "v" },
+    { "id": "eau", "texte": "eau", "type": "trigramme", "son": "o", "classe": "v" }
+  ],
+
+  "mots": [
+    { "mot": "papa", "emoji": "👨", "niveau": 1, "nbSyllabes": 2, "graphemes": [["p","consonne","p",1],["a","voyelle","a",1],["p","consonne","p",2],["a","voyelle","a",2]] },
+    { "mot": "lama", "emoji": "🦙", "niveau": 1, "nbSyllabes": 2, "graphemes": [["l","consonne","l",1],["a","voyelle","a",1],["m","consonne","m",2],["a","voyelle","a",2]] },
+    { "mot": "moto", "emoji": "🏍️", "niveau": 1, "nbSyllabes": 2, "graphemes": [["m","consonne","m",1],["o","voyelle","o",1],["t","consonne","t",2],["o","voyelle","o",2]] },
+    { "mot": "vélo", "emoji": "🚲", "niveau": 1, "nbSyllabes": 2, "graphemes": [["v","consonne","v",1],["é","voyelle","e",1],["l","consonne","l",2],["o","voyelle","o",2]] },
+    { "mot": "bébé", "emoji": "👶", "niveau": 1, "nbSyllabes": 2, "graphemes": [["b","consonne","b",1],["é","voyelle","e",1],["b","consonne","b",2],["é","voyelle","e",2]] },
+
+    { "mot": "lune", "emoji": "🌙", "niveau": 2, "nbSyllabes": 2, "graphemes": [["l","consonne","l",1],["u","voyelle","y",1],["n","consonne","n",2],["e","muette",null,2]] },
+    { "mot": "robe", "emoji": "👗", "niveau": 2, "nbSyllabes": 2, "graphemes": [["r","consonne","r",1],["o","voyelle","o",1],["b","consonne","b",2],["e","muette",null,2]] },
+    { "mot": "radis", "emoji": null, "niveau": 2, "nbSyllabes": 2, "graphemes": [["r","consonne","r",1],["a","voyelle","a",1],["d","consonne","d",2],["i","voyelle","i",2],["s","muette",null,2]] },
+    { "mot": "rat", "emoji": "🐀", "niveau": 2, "nbSyllabes": 1, "graphemes": [["r","consonne","r",1],["a","voyelle","a",1],["t","muette",null,1]] },
+    { "mot": "sac", "emoji": "🎒", "niveau": 2, "nbSyllabes": 1, "graphemes": [["s","consonne","s",1],["a","voyelle","a",1],["c","consonne","k",1]] },
+    { "mot": "tomate", "emoji": "🍅", "niveau": 2, "nbSyllabes": 3, "graphemes": [["t","consonne","t",1],["o","voyelle","o",1],["m","consonne","m",2],["a","voyelle","a",2],["t","consonne","t",3],["e","muette",null,3]] },
+    { "mot": "salade", "emoji": "🥗", "niveau": 2, "nbSyllabes": 3, "graphemes": [["s","consonne","s",1],["a","voyelle","a",1],["l","consonne","l",2],["a","voyelle","a",2],["d","consonne","d",3],["e","muette",null,3]] },
+    { "mot": "table", "emoji": null, "niveau": 2, "nbSyllabes": 2, "graphemes": [["t","consonne","t",1],["a","voyelle","a",1],["b","consonne","b",2],["l","consonne","l",2],["e","muette",null,2]] },
+    { "mot": "livre", "emoji": "📖", "niveau": 2, "nbSyllabes": 2, "graphemes": [["l","consonne","l",1],["i","voyelle","i",1],["v","consonne","v",2],["r","consonne","r",2],["e","muette",null,2]] },
+    { "mot": "canard", "emoji": "🦆", "niveau": 2, "nbSyllabes": 2, "graphemes": [["c","consonne","k",1],["a","voyelle","a",1],["n","consonne","n",2],["a","voyelle","a",2],["r","consonne","r",2],["d","muette",null,2]] },
+    { "mot": "tortue", "emoji": "🐢", "niveau": 2, "nbSyllabes": 2, "graphemes": [["t","consonne","t",1],["o","voyelle","o",1],["r","consonne","r",1],["t","consonne","t",2],["u","voyelle","y",2],["e","muette",null,2]] },
+
+    { "mot": "chat", "emoji": "🐱", "niveau": 3, "nbSyllabes": 1, "graphemes": [["ch","digramme","ʃ",1],["a","voyelle","a",1],["t","muette",null,1]] },
+    { "mot": "chou", "emoji": "🥬", "niveau": 3, "nbSyllabes": 1, "graphemes": [["ch","digramme","ʃ",1],["ou","digramme","u",1]] },
+    { "mot": "cheval", "emoji": "🐴", "niveau": 3, "nbSyllabes": 2, "graphemes": [["ch","digramme","ʃ",1],["e","voyelle","ə",1],["v","consonne","v",2],["a","voyelle","a",2],["l","consonne","l",2]] },
+    { "mot": "chapeau", "emoji": "🎩", "niveau": 3, "nbSyllabes": 2, "graphemes": [["ch","digramme","ʃ",1],["a","voyelle","a",1],["p","consonne","p",2],["eau","trigramme","o",2]] },
+    { "mot": "souris", "emoji": "🐭", "niveau": 3, "nbSyllabes": 2, "graphemes": [["s","consonne","s",1],["ou","digramme","u",1],["r","consonne","r",2],["i","voyelle","i",2],["s","muette",null,2]] },
+    { "mot": "poule", "emoji": "🐔", "niveau": 3, "nbSyllabes": 1, "graphemes": [["p","consonne","p",1],["ou","digramme","u",1],["l","consonne","l",1],["e","muette",null,1]] },
+    { "mot": "fourmi", "emoji": "🐜", "niveau": 3, "nbSyllabes": 2, "graphemes": [["f","consonne","f",1],["ou","digramme","u",1],["r","consonne","r",1],["m","consonne","m",2],["i","voyelle","i",2]] },
+    { "mot": "lapin", "emoji": "🐰", "niveau": 3, "nbSyllabes": 2, "graphemes": [["l","consonne","l",1],["a","voyelle","a",1],["p","consonne","p",2],["in","digramme","ɛ̃",2]] },
+    { "mot": "pain", "emoji": "🍞", "niveau": 3, "nbSyllabes": 1, "graphemes": [["p","consonne","p",1],["ain","trigramme","ɛ̃",1]] },
+    { "mot": "main", "emoji": "✋", "niveau": 3, "nbSyllabes": 1, "graphemes": [["m","consonne","m",1],["ain","trigramme","ɛ̃",1]] },
+    { "mot": "train", "emoji": "🚆", "niveau": 3, "nbSyllabes": 1, "graphemes": [["t","consonne","t",1],["r","consonne","r",1],["ain","trigramme","ɛ̃",1]] },
+    { "mot": "melon", "emoji": "🍈", "niveau": 3, "nbSyllabes": 2, "graphemes": [["m","consonne","m",1],["e","voyelle","ə",1],["l","consonne","l",2],["on","digramme","ɔ̃",2]] },
+    { "mot": "jardin", "emoji": null, "niveau": 3, "nbSyllabes": 2, "graphemes": [["j","consonne","ʒ",1],["a","voyelle","a",1],["r","consonne","r",1],["d","consonne","d",2],["in","digramme","ɛ̃",2]] },
+    { "mot": "bateau", "emoji": "⛵", "niveau": 3, "nbSyllabes": 2, "graphemes": [["b","consonne","b",1],["a","voyelle","a",1],["t","consonne","t",2],["eau","trigramme","o",2]] },
+
+    { "mot": "maison", "emoji": "🏠", "niveau": 4, "nbSyllabes": 2, "graphemes": [["m","consonne","m",1],["ai","digramme","ɛ",1],["s","consonne","z",2],["on","digramme","ɔ̃",2]] },
+    { "mot": "oiseau", "emoji": "🐦", "niveau": 4, "nbSyllabes": 2, "graphemes": [["oi","digramme","wa",1],["s","consonne","z",2],["eau","trigramme","o",2]] },
+    { "mot": "champignon", "emoji": "🍄", "niveau": 4, "nbSyllabes": 3, "graphemes": [["ch","digramme","ʃ",1],["am","digramme","ɑ̃",1],["p","consonne","p",2],["i","voyelle","i",2],["gn","digramme","ɲ",3],["on","digramme","ɔ̃",3]] }
+  ]
+}

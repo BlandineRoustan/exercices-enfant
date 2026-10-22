@@ -1,0 +1,35 @@
+Images attendues (WebP ou JPG ou PNG, environ 300 px, nom sans accent) :
+
+papa.webp          <- PAPA
+lama.webp          <- LAMA
+moto.webp          <- MOTO
+velo.webp          <- VÉLO
+bebe.webp          <- BÉBÉ
+lune.webp          <- LUNE
+robe.webp          <- ROBE
+radis.webp         <- RADIS
+rat.webp           <- RAT
+sac.webp           <- SAC
+tomate.webp        <- TOMATE
+salade.webp        <- SALADE
+table.webp         <- TABLE
+livre.webp         <- LIVRE
+canard.webp        <- CANARD
+tortue.webp        <- TORTUE
+chat.webp          <- CHAT
+chou.webp          <- CHOU
+cheval.webp        <- CHEVAL
+chapeau.webp       <- CHAPEAU
+souris.webp        <- SOURIS
+poule.webp         <- POULE
+fourmi.webp        <- FOURMI
+lapin.webp         <- LAPIN
+pain.webp          <- PAIN
+main.webp          <- MAIN
+train.webp         <- TRAIN
+melon.webp         <- MELON
+jardin.webp        <- JARDIN
+bateau.webp        <- BATEAU
+maison.webp        <- MAISON
+oiseau.webp        <- OISEAU
+champignon.webp    <- CHAMPIGNON

@@ -180,6 +180,10 @@ export function reglages(root, accueil) {
   z.append(el('h2', null, 'Logique'));
   z.append(el('p', 'petit', 'Motifs jusqu\'à (nombre de formes dans le motif) :'));
   groupe(z, [[2, '2'], [3, '3'], [4, '4'], [6, '6']], st.motifMax, v => set({ motifMax: v }));
+  z.append(el('p', 'petit', 'Chemin : choisir les flèches'));
+  groupe(z, [['pas', 'Une par une'], ['programme', "Toutes d'un coup"]], st.cheminMode, v => set({ cheminMode: v }));
+  z.append(el('p', 'petit', 'Chemin : longueur'));
+  groupe(z, [['court', 'Court (2 à 4 pas)'], ['moyen', 'Moyen (4 à 7)'], ['long', 'Long (7 à 10)']], st.cheminLong, v => set({ cheminLong: v }));
 
   /* ---------- Infos ---------- */
   z.append(el('h2', null, 'Images'));

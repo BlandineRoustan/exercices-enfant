@@ -2,7 +2,7 @@ import { chargerDonnees, DATA, profils, profil, choisirProfil, choisirJeu } from
 import { resoudre } from './images.js';
 import { exoSons, exoSyllabes, exoMots } from './exercices.js';
 import { exoCompter, exoQuantites, exoCalculer, exoCompleter, exoComparer, exoSuite } from './maths.js';
-import { exoMotif, exoContinuer } from './logique.js';
+import { exoMotif, exoContinuer, exoChemin } from './logique.js';
 import { reglages } from './reglages.js';
 import { el, orienter, ROUE } from './ui.js';
 
@@ -13,7 +13,7 @@ const THEMES = [
   { titre: 'LECTURE', jeux: [['SONS', exoSons], ['SYLLABES', exoSyllabes], ['MOTS', exoMots]] },
   { titre: 'MATHS', jeux: [['COMPTER', exoCompter], ['QUANTITÉS', exoQuantites], ['CALCULER', exoCalculer],
     ['COMPLÉTER', exoCompleter], ['COMPARER', exoComparer], ['SUITES', exoSuite]] },
-  { titre: 'LOGIQUE', jeux: [['MOTIFS', exoMotif], ['CONTINUER', exoContinuer]] }
+  { titre: 'LOGIQUE', jeux: [['MOTIFS', exoMotif], ['CONTINUER', exoContinuer], ['CHEMIN', exoChemin]] }
 ];
 
 // « Qui joue ? » : un gros bouton par profil (affiché au lancement s'il y a plusieurs enfants)

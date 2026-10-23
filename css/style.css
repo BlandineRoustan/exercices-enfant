@@ -147,6 +147,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .symbole svg { width: 100%; height: 100%; display: block; }
 .symbole.trou { border: 4px dashed #8E8A80; border-radius: 14px; color: #8E8A80; font-weight: 800; font-size: min(7vw, 5dvh); }
 .motif { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; width: 100%; }
+
+/* Cartes empilées : une par ligne, pleine largeur, contenu toujours sur une seule ligne */
+.choix.empile { flex-direction: column; align-items: center; gap: 8px; }
+.choix.empile .carte { flex: none; width: min(92vw, 520px); max-width: none; border-width: 5px; border-radius: 24px; }
+.choix.empile .photo { width: 100%; aspect-ratio: auto; padding: 8px 10px; border-radius: 18px; }
+.choix.empile .motif { flex-wrap: nowrap; }
+.choix.empile .motif .symbole { width: min(11vw, 7dvh); }
+
+/* Chemin : carte quadrillée, flèches */
+.etape, .plateau { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.grille { --n: 4; display: grid; grid-template-columns: repeat(var(--n), 1fr); gap: 3px; width: min(78vw, 40dvh); padding: 4px; background: #B9B3A5; border-radius: 14px; }
+.cellule { aspect-ratio: 1; border-radius: 8px; background: #DDD8CC; display: grid; place-items: center; }
+.cellule.chemin { background: #F4D58D; }
+.acteur { font-size: calc(min(78vw, 40dvh) / var(--n) * 0.62); line-height: 1; }
+.fleche { width: min(17vw, 11dvh); aspect-ratio: 1; display: block; }
+.fleche svg { width: 100%; height: 100%; display: block; }
+.carte .photo.face > .fleche { width: 70%; }
+.programme { display: flex; flex-wrap: nowrap; justify-content: center; align-items: center; gap: 10px; min-height: min(7vw, 4.5dvh); }
+.groupe { display: flex; gap: 0; }
+.fleche.petite { width: min(7.5vw, 4.5dvh); }
 .motif .symbole { width: 28%; }
 .motif.n2 .symbole { width: 42%; }
 .carte .photo.face > .symbole { width: 80%; }
@@ -222,6 +242,10 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .carte .scene { --t: min(5dvh, 3vw); }
   .operation { font-size: min(20dvh, 9vw); }
   .symbole { width: min(11dvh, 6vw); }
+  .grille { width: min(70dvh, 40vw); }
+  .acteur { font-size: calc(min(70dvh, 40vw) / var(--n) * 0.62); }
+  .choix.empile { flex: 0 1 auto; }
+  .choix.empile .carte { width: min(46vw, 460px); }
   .fin-titre, .fin-score { flex-basis: 100%; }
 }
 

@@ -129,11 +129,12 @@ export function montrerBonne(boutons, bonBtn, suite) {
 // Un modèle (nœud DOM) et plusieurs cartes à toucher ; "bon" = indice de la bonne carte.
 // Erreur : avec 3 cartes ou plus, la carte fausse est grisée et l'enfant choisit à nouveau ;
 // avec 2 cartes, la bonne est entourée et l'enfant la touche. Le score garde la première réponse.
-export function cartes(S, modele, faces, bon, fini) {
+// "empile" : cartes l'une sous l'autre, pleine largeur (pour une rangée de symboles qui doit rester sur une ligne).
+export function cartes(S, modele, faces, bon, fini, { empile = false } = {}) {
   S.zone.replaceChildren();
   const m = el('div', 'modele');
   m.append(modele);
-  const rang = el('div', 'choix');
+  const rang = el('div', 'choix' + (empile ? ' empile' : ''));
   let ferme = false;
   let premier = null; // résultat de la première réponse
   const btns = faces.map((f, i) => {

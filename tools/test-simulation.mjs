@@ -3,7 +3,7 @@ const st = setTimeout;
 globalThis.setTimeout = (f, ms) => st(f, 0);
 
 class El {
-  constructor(tag) { this.tag = tag; this.children = []; this._cls = new Set(); this.dataset = {}; this.style = {}; this.attrs = {}; this.parent = null; this.textContent = ''; this.onclick = null; this._html = ''; }
+  constructor(tag) { this.tag = tag; this.children = []; this._cls = new Set(); this.dataset = {}; this.style = { setProperty() {} }; this.attrs = {}; this.parent = null; this.textContent = ''; this.onclick = null; this._html = ''; }
   set className(v) { this._cls = new Set(String(v).split(/\s+/).filter(Boolean)); }
   get className() { return [...this._cls].join(' '); }
   get classList() { const s = this._cls; return { add: (...c) => c.forEach(x => s.add(x)), remove: (...c) => c.forEach(x => s.delete(x)), toggle: (c, f) => { const on = f === undefined ? !s.has(c) : f; if (on) s.add(c); else s.delete(c); return on; }, contains: c => s.has(c) }; }
@@ -89,6 +89,12 @@ for (const motifMax of [2, 3, 4, 6]) {
   store.set({ motifMax });
   await jouer(`Motifs (max ${motifMax})`, lo.exoMotif, cliqueCarte);
   await jouer(`Continuer (max ${motifMax})`, lo.exoContinuer, cliqueCarte);
+}
+for (const cheminMode of ['pas', 'programme']) {
+  for (const cheminLong of ['court', 'moyen', 'long']) {
+    store.set({ cheminMode, cheminLong });
+    await jouer(`Chemin ${cheminMode} ${cheminLong}`, lo.exoChemin, cliqueCarte);
+  }
 }
 // profils : chaque enfant garde ses réglages et son historique
 store.choisirJeu('TEST');

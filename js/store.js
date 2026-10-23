@@ -17,7 +17,9 @@ const defauts = {
   operations: ['+', '-'], // maths, calculer : opérations proposées
   comparer: 'objets',     // maths, comparer : 'objets' | 'nombres' | 'mixte'
   autant: true,           // maths, comparer : propose aussi « autant »
-  motifMax: 3             // logique : longueur maximale d'un motif (2 à 6)
+  motifMax: 3,            // logique : longueur maximale d'un motif (2 à 6)
+  cheminMode: 'pas',      // logique, chemin : 'pas' (une flèche à la fois) | 'programme' (suite de flèches)
+  cheminLong: 'court'     // logique, chemin : 'court' | 'moyen' | 'long'
 };
 const copie = o => JSON.parse(JSON.stringify(o));
 

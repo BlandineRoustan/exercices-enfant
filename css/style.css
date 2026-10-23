@@ -124,14 +124,12 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .carte .photo.face { padding: 8%; }
 .carte .photo.face .dessin.double { width: 100%; }
 
-/* Jeux : additions, soustractions, cadre à compléter, comparaison, suites */
+/* Jeux : additions, soustractions, comparaison, suites */
 .scene.petit { --t: min(11vw, 8.5dvh); }
 .objet { position: relative; }
 .objet.barre::after { content: "×"; position: absolute; inset: 0; display: grid; place-items: center; color: var(--ko); font-weight: 800; font-size: calc(var(--t) * 1.3); line-height: 1; text-shadow: 0 0 5px #fff, 0 0 5px #fff; }
 .calcul { display: flex; flex-direction: column; align-items: center; gap: 0; }
 .signe { font-size: clamp(30px, 9vw, 54px); font-weight: 800; color: var(--encre); line-height: 1; }
-.dix { --t: min(15vw, 12dvh); display: flex; flex-wrap: wrap; justify-content: center; width: calc(var(--t) * 5.4); max-width: 100%; gap: 6px 0; }
-.case { width: var(--t); height: var(--t); margin: 0 calc(var(--t) * 0.04); border: 3px solid #9A9A92; border-radius: 12px; display: grid; place-items: center; font-size: calc(var(--t) * 0.68); line-height: 1; }
 .consigne { font-size: clamp(34px, 11vw, 64px); font-weight: 800; letter-spacing: 0.06em; color: var(--encre); padding: 6px 14px; }
 .suite { display: flex; gap: 8px; justify-content: center; }
 .num { width: min(15vw, 12dvh); aspect-ratio: 1; display: grid; place-items: center; border-radius: 16px; background: #DAD6CB; color: var(--encre); font-size: min(9vw, 7dvh); font-weight: 800; }
@@ -219,7 +217,6 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .scene.petit { --t: min(9dvh, 5.2vw); }
   .calcul { flex-direction: row; gap: 10px; }
   .signe { font-size: min(14dvh, 7vw); }
-  .dix { --t: min(14dvh, 6.5vw); }
   .consigne { font-size: min(18dvh, 8vw); }
   .num { width: min(14dvh, 8vw); font-size: min(8dvh, 4.5vw); }
   .carte .scene { --t: min(5dvh, 3vw); }

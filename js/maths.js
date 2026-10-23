@@ -178,14 +178,17 @@ const OPERATIONS = {
 };
 const SIGNE = { '+': '+', '-': '−' };
 
-function operation(a, op, b) {
+// "a op b = res" avec un trou (?) à la place du terme d'indice "trou" (0 = a, 1 = b, 2 = res)
+function operation([a, b, res], op, trou) {
   const c = el('div', 'operation');
-  c.append(el('span', null, `${a} ${SIGNE[op]} ${b} =`), el('span', 'num trou', '?'));
+  const t = i => (i === trou ? el('span', 'num trou', '?') : el('span', null, String([a, b, res][i])));
+  c.append(t(0), el('span', null, SIGNE[op]), t(1), el('span', null, '='), t(2));
   return c;
 }
 
-export function exoCalculer(root, retour) {
-  jeu(root, retour, () => exoCalculer(root, retour), max => {
+// Questions à trou : "trous" = positions possibles du trou. Réglage "operations" commun à CALCULER et COMPLÉTER.
+function jeuOperation(root, retour, relancer, trous) {
+  jeu(root, retour, relancer, max => {
     const ops = (get().operations || []).filter(o => OPERATIONS[o]);
     const choix = ops.length ? ops : ['+'];
     let der = '';
@@ -197,32 +200,23 @@ export function exoCalculer(root, retour) {
         cle = r && r[0] + op + r[1];
       } while ((!r || (cle === der && essais < 30)) && essais++ < 60);
       der = cle;
-      const [a, b, res] = r;
-      const nombres = shuffle([res, ...distracteurs(res, 0, max, new Set([a, b]))]);
-      return { modele: operation(a, op, b), faces: nombres.map(chiffre), bon: nombres.indexOf(res) };
+      const trou = pick(trous);
+      const rep = r[trou];
+      const visibles = new Set(r.filter((_, i) => i !== trou));
+      const nombres = shuffle([rep, ...distracteurs(rep, 0, max, visibles)]);
+      return { modele: operation(r, op, trou), faces: nombres.map(chiffre), bon: nombres.indexOf(rep) };
     };
   });
 }
 
-/* ---------- COMPLÉTER : combien manque-t-il pour remplir le cadre (jusqu'à 3, 5 ou 10) ? ---------- */
-
-function cadreDix(objet, a, total) {
-  const d = el('div', 'dix');
-  for (let i = 0; i < total; i++) d.append(el('span', 'case', i < a ? objet : ''));
-  return d;
+export function exoCalculer(root, retour) {
+  jeuOperation(root, retour, () => exoCalculer(root, retour), [2]);
 }
+
+/* ---------- COMPLÉTER : calcul à trou, le terme manquant (3 + ? = 5, ? − 2 = 4) ---------- */
 
 export function exoCompleter(root, retour) {
-  jeu(root, retour, () => exoCompleter(root, retour), max => {
-    const a_ = tireur(1, max - 1);
-    const obj = tireurObjets();
-    return () => {
-      const a = a_();
-      const manque = max - a;
-      const nombres = shuffle([manque, ...distracteurs(manque, 0, max)]);
-      return { modele: cadreDix(obj(), a, max), faces: nombres.map(chiffre), bon: nombres.indexOf(manque) };
-    };
-  });
+  jeuOperation(root, retour, () => exoCompleter(root, retour), [0, 1]);
 }
 
 /* ---------- COMPARER : le plus, le moins, ou autant ---------- */

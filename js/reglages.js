@@ -158,7 +158,7 @@ export function reglages(root, accueil) {
   z.append(el('h2', null, 'Maths'));
   z.append(el('p', 'petit', 'Nombres jusqu\'à (le dé reste limité à 6) :'));
   groupe(z, [[3, '3'], [5, '5'], [10, '10']], st.maxNombre, v => set({ maxNombre: v }));
-  z.append(el('p', 'petit', 'Calculer : opérations proposées (au moins une) :'));
+  z.append(el('p', 'petit', 'Calculer et compléter : opérations proposées (au moins une) :'));
   const lo = el('div', 'ligne');
   const ops = new Set(st.operations);
   for (const [o, txt] of [['+', '+ addition'], ['-', '− soustraction']]) {

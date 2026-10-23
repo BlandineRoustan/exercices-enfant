@@ -1,8 +1,8 @@
 // Change le numéro de version pour forcer la mise à jour de tous les fichiers.
-const V = 'lecture-v1';
+const V = 'lecture-v4';
 const CORE = [
   './', 'index.html', 'manifest.json', 'css/style.css',
-  'js/app.js', 'js/store.js', 'js/images.js', 'js/render.js', 'js/ui.js', 'js/exercices.js', 'js/reglages.js',
+  'js/app.js', 'js/store.js', 'js/images.js', 'js/render.js', 'js/ui.js', 'js/exercices.js', 'js/maths.js', 'js/reglages.js',
   'data/mots.json', 'icons/icon-192.png', 'icons/icon-512.png'
 ];
 

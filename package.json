@@ -1,0 +1,10 @@
+{
+  "name": "lecture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generer": "python3 tools/generer_mots.py",
+    "verifier": "python3 tools/verifier_mots.py",
+    "test": "node tools/test-simulation.mjs"
+  }
+}

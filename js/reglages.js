@@ -24,21 +24,52 @@ export function reglages(root, accueil) {
   z.classList.add('defile');
   const st = get();
 
-  /* Sons maîtrisés */
+  /* ---------- Lecture : graphies maîtrisées ---------- */
   z.append(el('h2', null, 'Sons maîtrisés'));
-  z.append(el('p', 'petit', "Touche pour cocher. Les exercices n'utilisent que ces sons."));
+  z.append(el('p', 'petit', "Touche pour cocher. Les exercices de lecture n'utilisent que ces graphies."));
   const M = new Set(st.maitrises);
   const sauver = () => set({ maitrises: [...M] });
-  const puces = [];
+  const puces = []; // [graphie, bouton]
+  const maj = () => puces.forEach(([s, b]) => b.classList.toggle('on', M.has(s.id)));
+
+  // Un seul bouton : tout sélectionner, ou tout désélectionner si tout l'est déjà
+  const basculer = liste => {
+    const tous = liste.every(s => M.has(s.id));
+    liste.forEach(s => { if (tous) M.delete(s.id); else M.add(s.id); });
+    maj();
+    sauver();
+  };
+
+  const haut = el('div', 'ligne');
+  const toutBtn = el('button', 'opt gras', 'Tout (dé)sélectionner');
+  toutBtn.onclick = () => basculer(DATA.sons);
+  haut.append(toutBtn);
+  for (const n of [1, 2, 3, 4]) {
+    const b = el('button', 'opt', n === 1 ? 'Niveau 1' : 'Jusqu\'au niveau ' + n);
+    b.onclick = () => {
+      M.clear();
+      DATA.sons.filter(s => s.niveau <= n).forEach(s => M.add(s.id));
+      maj();
+      sauver();
+    };
+    haut.append(b);
+  }
+  z.append(haut);
+
   const groupes = [
     ['Voyelles', s => s.type === 'voyelle'],
     ['Consonnes', s => s.type === 'consonne'],
-    ['Digrammes et trigrammes', s => s.type === 'digramme' || s.type === 'trigramme']
+    ['Digrammes, trigrammes et quadrigrammes', s => ['digramme', 'trigramme', 'quadrigramme'].includes(s.type)]
   ];
   for (const [nom, f] of groupes) {
-    z.append(el('h3', null, nom));
+    const liste = DATA.sons.filter(f);
+    const entete = el('div', 'entete');
+    const tg = el('button', 'opt petit-bouton', 'Tout (dé)sélectionner');
+    tg.onclick = () => basculer(liste);
+    entete.append(el('h3', null, nom), tg);
+    z.append(entete);
     const ligne = el('div', 'ligne');
-    for (const s of DATA.sons.filter(f)) {
+    for (const s of liste) {
       const b = el('button', 'puce' + (M.has(s.id) ? ' on' : ''));
       b.append(sonsEl([s]), el('small', null, '/' + s.son + '/'));
       b.onclick = () => {
@@ -51,22 +82,14 @@ export function reglages(root, accueil) {
     }
     z.append(ligne);
   }
-  const lot = el('div', 'ligne');
-  const tout = el('button', 'opt', 'Tout cocher');
-  const rien = el('button', 'opt', 'Tout décocher');
-  tout.onclick = () => { DATA.sons.forEach(s => M.add(s.id)); puces.forEach(([s, b]) => b.classList.add('on')); sauver(); };
-  rien.onclick = () => { M.clear(); puces.forEach(([s, b]) => b.classList.remove('on')); sauver(); };
-  lot.append(tout, rien);
-  z.append(lot);
 
-  /* Sons */
+  /* ---------- Lecture : exercices ---------- */
   z.append(el('h2', null, 'Exercice des sons'));
   groupe(z, [['ouinon', "J'entends / je n'entends pas"], ['choix3', 'Choisir parmi 3 images']],
     st.modeSons, v => set({ modeSons: v }));
 
-  /* Syllabes */
   z.append(el('h2', null, 'Exercice des syllabes'));
-  groupe(z, [['lecture', "Lecture (le parent valide)"], ['image', 'Syllabe dans un mot illustré']],
+  groupe(z, [['lecture', 'Lecture (le parent valide)'], ['image', 'Syllabe dans un mot illustré']],
     st.modeSyllabes, v => set({ modeSyllabes: v }));
   z.append(el('p', 'petit', 'Formes de syllabes (au moins une) :'));
   const lp = el('div', 'ligne');
@@ -82,18 +105,24 @@ export function reglages(root, accueil) {
   }
   z.append(lp);
 
-  /* Mots */
   z.append(el('h2', null, 'Exercice des mots'));
   z.append(el('p', 'petit', 'Retour visuel (coche / croix) :'));
   groupe(z, [[true, 'Oui'], [false, 'Non']], st.confirmMots, v => set({ confirmMots: v }));
+  z.append(el('p', 'petit', "Passer l'écran en paysage (si le téléphone l'autorise) :"));
+  groupe(z, [[true, 'Oui'], [false, 'Non']], st.forcerPaysage, v => set({ forcerPaysage: v }));
   z.append(el('p', 'petit', 'Nombre de syllabes :'));
   groupe(z, [[0, 'Tous'], [1, '1'], [2, '2'], [3, '3']], st.filtreSyl, v => set({ filtreSyl: v }));
   z.append(el('p', 'petit', 'Mots contenant la graphie :'));
   const grs = [['', 'Toutes']].concat(
-    DATA.sons.filter(s => s.type === 'digramme' || s.type === 'trigramme').map(s => [s.id, s.texte]));
+    DATA.sons.filter(s => ['digramme', 'trigramme', 'quadrigramme'].includes(s.type)).map(s => [s.id, s.texte + (s.id.includes('-') ? ' /' + s.son + '/' : '')]));
   groupe(z, grs, st.filtreGraphie, v => set({ filtreGraphie: v }));
 
-  /* Infos */
+  /* ---------- Maths ---------- */
+  z.append(el('h2', null, 'Maths'));
+  z.append(el('p', 'petit', 'Nombres jusqu\'à (le dé reste limité à 6) :'));
+  groupe(z, [[3, '3'], [5, '5'], [10, '10']], st.maxNombre, v => set({ maxNombre: v }));
+
+  /* ---------- Infos ---------- */
   z.append(el('h2', null, 'Images'));
   z.append(el('p', 'petit',
     `${nbImages()} image(s) trouvée(s) sur ${DATA.mots.length} mots. Un mot sans image utilise son emoji, ou n'est pas proposé s'il n'en a pas.`));

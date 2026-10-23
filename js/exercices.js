@@ -1,9 +1,12 @@
 import { DATA, get, maitrises, idDe } from './store.js';
 import { visuel, photo } from './images.js';
 import { sonsEl, motEl } from './render.js';
-import { el, pick, shuffle, attendre, cadre, message, retourVisuel, rond } from './ui.js';
+import { el, pick, shuffle, attendre, cadre, message, retourVisuel, rond, suite, orienter } from './ui.js';
 
-const AIDE = "Coche des sons dans les réglages (appui long sur la roue de l'accueil).";
+const AIDE = "Coche des sons dans les réglages (roue dentée de l'accueil).";
+
+// Mots utilisables : réguliers et illustrés (image ou emoji)
+const motsVisuels = () => DATA.mots.filter(m => m.regulier !== false && visuel(m));
 
 /* ---------- Écrans communs ---------- */
 
@@ -94,17 +97,19 @@ function tireurOui() {
 
 /* ---------- Exercice : SONS ---------- */
 
-export function exoSons(root, accueil) {
-  const S = cadre(root, accueil);
+export function exoSons(root, retour) {
+  const S = cadre(root, retour);
   const M = maitrises();
   const cibles = DATA.sons.filter(s => M.has(s.id));
-  const mots = DATA.mots.filter(visuel);
-  const entend = (m, s) => m.graphemes.some(g => g[2] === s.son); // on compare les SONS, pas les lettres
+  const mots = motsVisuels();
+  // On compare les SONS, pas les lettres. Le e final lisible (lu-ne) n'est pas "entendu" : le parent dit lune.
+  const entend = (m, s) => m.graphemes.some((g, i) => g[2] === s.son && !(g[0] === 'e' && i === m.graphemes.length - 1));
   const jouables = cibles.filter(s =>
     mots.some(m => entend(m, s)) && mots.filter(m => !entend(m, s)).length >= 2);
   if (!jouables.length) return message(S, AIDE);
 
   const tirer = tireurOui();
+  const apres = suite(S, retour, () => exoSons(root, retour), () => suivant());
   let dernier = null;
   let dernierMot = null;
 
@@ -118,7 +123,7 @@ export function exoSons(root, accueil) {
     let m;
     do { m = pick(pool); } while (pool.length > 1 && m === dernierMot);
     dernierMot = m;
-    ouiNon(S, sonsEl([s]), m, oui, suivant);
+    ouiNon(S, sonsEl([s]), m, oui, apres);
   };
 
   const choix3 = s => {
@@ -126,7 +131,7 @@ export function exoSons(root, accueil) {
     const mauvais = mots.filter(m => !entend(m, s));
     const nb = Math.min(bons.length, Math.random() < 0.5 ? 1 : 2);
     const sel = shuffle([...shuffle(bons).slice(0, nb), ...shuffle(mauvais).slice(0, 3 - nb)]);
-    selection(S, sonsEl([s]), sel, m => entend(m, s), suivant, true);
+    selection(S, sonsEl([s]), sel, m => entend(m, s), apres, true);
   };
 
   suivant();
@@ -134,27 +139,41 @@ export function exoSons(root, accueil) {
 
 /* ---------- Exercice : SYLLABES ---------- */
 
-export function exoSyllabes(root, accueil) {
-  const S = cadre(root, accueil);
+// "c" et "g" devant e, i, é, è, ê se liraient /s/ et /ʒ/ : on évite les syllabes trompeuses
+const AVANT = new Set(['e', 'i', 'é', 'è', 'ê']);
+const mal = (c, v) => {
+  if (c.id === 'c' || c.id === 'g') return AVANT.has(v.id);
+  if (c.id === 'c-s' || c.id === 'g-j') return !AVANT.has(v.id);
+  if (c.id === 'ç') return AVANT.has(v.id);
+  if (c.id === 'gu') return !AVANT.has(v.id); // "gu" se lit /g/ devant e, i : gui, gue
+  return false;
+};
+const SANS_FINALE = new Set(['j', 'g-j', 'c-s', 'ç', 's-z', 'qu', 'gu', 'gn', 'ph']);
+
+export function exoSyllabes(root, retour) {
+  const S = cadre(root, retour);
   const st = get();
   const M = maitrises();
   const sons = DATA.sons.filter(s => M.has(s.id));
   const C = sons.filter(s => s.classe === 'c' && s.id !== 's-z');
   const V = sons.filter(s => s.classe === 'v');
-  const finales = C.filter(c => c.id !== 'j');
+  const finales = C.filter(c => !SANS_FINALE.has(c.id));
+  const Vferme = V.filter(v => v.id !== 'e'); // "e" en syllabe fermée se lit /ɛ/ : on l'évite
   const patrons = st.patrons.length ? st.patrons : ['CV'];
   if (!C.length || !V.length) return message(S, "Il faut au moins une consonne et une voyelle maîtrisées. " + AIDE);
 
-  // "c" suivi de e, i, é se lirait /s/ : on évite
-  const mal = (c, v) => c.id === 'c' && ['e', 'i', 'é'].includes(v.id);
   const genere = () => {
-    for (let t = 0; t < 40; t++) {
+    for (let t = 0; t < 60; t++) {
       const p = pick(patrons);
+      if (p === 'VC') {
+        if (!Vferme.length || !finales.length) continue;
+        return [pick(Vferme), pick(finales)];
+      }
       const c = pick(C);
-      const v = pick(V);
-      if (p === 'VC') return [v, pick(finales)];
-      if (mal(c, v)) continue;
-      return p === 'CV' ? [c, v] : [c, v, pick(finales)];
+      const v = pick(p === 'CVC' ? Vferme : V);
+      if (!v || mal(c, v)) continue;
+      if (p === 'CV') return [c, v];
+      if (finales.length) return [c, v, pick(finales)];
     }
     return [pick(C), pick(V)];
   };
@@ -168,6 +187,7 @@ export function exoSyllabes(root, accueil) {
     const file = []; // syllabes à revoir, qui reviennent après quelques essais
     let compte = 0;
     let derniere = '';
+    const apres = suite(S, retour, () => exoSyllabes(root, retour), () => suivant());
     const suivant = () => {
       let syl;
       if (file.length && ++compte >= 3) {
@@ -193,7 +213,7 @@ export function exoSyllabes(root, accueil) {
         await retourVisuel(bon);
         if (!S.vivant()) return;
         if (!bon) file.push(syl);
-        suivant();
+        apres(bon);
       };
       bo.onclick = () => rep(true);
       bn.onclick = () => rep(false);
@@ -203,7 +223,7 @@ export function exoSyllabes(root, accueil) {
 
   // Mode 2 : "entends-tu cette syllabe dans le mot ?" (image + ✔ / ✘)
   function syllabeDansMot() {
-    const mots = DATA.mots.filter(visuel);
+    const mots = motsVisuels();
     const syllabesDe = m => {
       const g = {};
       m.graphemes.forEach(x => { (g[x[3]] = g[x[3]] || []).push(x); });
@@ -211,9 +231,10 @@ export function exoSyllabes(root, accueil) {
     };
     const memo = new Map(mots.map(m => [m, syllabesDe(m)]));
     const tirer = tireurOui();
+    const apres = suite(S, retour, () => exoSyllabes(root, retour), () => suivant());
     let derniere = '';
     const suivant = () => {
-      for (let t = 0; t < 80; t++) {
+      for (let t = 0; t < 120; t++) {
         const syl = genere();
         const k = cle(syl);
         if (k === derniere) continue;
@@ -222,7 +243,7 @@ export function exoSyllabes(root, accueil) {
         if (!avec.length || !sans.length) continue;
         derniere = k;
         const oui = tirer();
-        return ouiNon(S, sonsEl(syl), pick(oui ? avec : sans), oui, suivant);
+        return ouiNon(S, sonsEl(syl), pick(oui ? avec : sans), oui, apres);
       }
       message(S, "Aucune syllabe ne correspond à un mot illustré avec ces sons. Coche d'autres sons ou ajoute des images.");
     };
@@ -232,13 +253,14 @@ export function exoSyllabes(root, accueil) {
 
 /* ---------- Exercice : MOTS ---------- */
 
-export function exoMots(root, accueil) {
-  const S = cadre(root, accueil);
+export function exoMots(root, retour) {
+  const S = cadre(root, retour);
   const st = get();
+  if (st.forcerPaysage) orienter('landscape'); // si le navigateur l'autorise ; sinon la mise en page s'adapte
   const M = maitrises();
   // Un mot est proposé si tous ses graphèmes non muets sont maîtrisés
   const dechiffrable = m => m.graphemes.every(([t, type, son]) => type === 'muette' || M.has(idDe(t, son)));
-  const avecImage = DATA.mots.filter(visuel);
+  const avecImage = motsVisuels();
   const dispo = avecImage.filter(m =>
     dechiffrable(m) &&
     (!st.filtreSyl || m.nbSyllabes === st.filtreSyl) &&
@@ -247,13 +269,17 @@ export function exoMots(root, accueil) {
     return message(S, "Aucun mot disponible avec ces réglages (sons maîtrisés, filtres ou images). " + AIDE);
   }
 
+  const apres = suite(S, retour, () => exoMots(root, retour), () => suivant());
   let dernier = null;
   const suivant = () => {
     let m;
     do { m = pick(dispo); } while (dispo.length > 1 && m === dernier);
     dernier = m;
-    const autres = shuffle(avecImage.filter(x => x !== m)).slice(0, 2);
-    selection(S, motEl(m), shuffle([m, ...autres]), x => x === m, suivant, false, st.confirmMots);
+    // les images d'un même "groupe" (ex. fleur / rose / tulipe) ne sont jamais proposées ensemble
+    let autres = avecImage.filter(x => x !== m && !(m.groupe && x.groupe === m.groupe));
+    if (autres.length < 2) autres = avecImage.filter(x => x !== m);
+    autres = shuffle(autres).slice(0, 2);
+    selection(S, motEl(m), shuffle([m, ...autres]), x => x === m, apres, false, st.confirmMots);
   };
   suivant();
 }

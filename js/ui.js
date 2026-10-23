@@ -1,3 +1,5 @@
+import { DATA } from './store.js';
+
 export const el = (tag, classe, texte) => {
   const e = document.createElement(tag);
   if (classe) e.className = classe;
@@ -17,6 +19,19 @@ export const shuffle = a => {
 };
 
 export const attendre = ms => new Promise(r => setTimeout(r, ms));
+
+// Nombre d'items d'une session (réglé dans data/mots.json > parametres.session.items)
+export const nbItems = () =>
+  (DATA && DATA.parametres && DATA.parametres.session && DATA.parametres.session.items) || 10;
+
+// Tente de verrouiller l'orientation (ne marche que si le navigateur l'autorise, par ex. appli installée).
+export function orienter(mode) {
+  try {
+    const o = screen.orientation;
+    if (!o) return;
+    if (mode) o.lock(mode).catch(() => {}); else o.unlock();
+  } catch (e) { /* non supporté */ }
+}
 
 const OK = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#2E9E4F"/><path d="M26 52 L43 69 L75 32" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const KO = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="48" fill="#D32F2F"/><path d="M33 33 L67 67 M67 33 L33 67" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round"/></svg>';
@@ -40,23 +55,94 @@ export async function retourVisuel(bon) {
   o.remove();
 }
 
-// Écran avec bouton accueil. "vivant()" devient faux dès qu'on quitte l'écran,
-// ce qui évite qu'une attente en cours ne réaffiche un exercice par-dessus l'accueil.
-export function cadre(root, accueil) {
+// Écran avec bouton retour (maison). "vivant()" devient faux dès qu'on quitte l'écran,
+// ce qui évite qu'une attente en cours ne réaffiche un exercice par-dessus le menu.
+// "points(n)" affiche la progression de la session (n items faits).
+export function cadre(root, retour) {
+  orienter(null);
   const id = String(Math.random());
   root.dataset.session = id;
   root.replaceChildren();
   const barre = el('div', 'barre');
   const b = el('button', 'retour');
   b.innerHTML = MAISON;
-  b.setAttribute('aria-label', 'Accueil');
-  b.onclick = () => accueil();
+  b.setAttribute('aria-label', 'Retour');
+  b.onclick = () => retour();
   barre.append(b);
   const zone = el('div', 'zone');
   root.append(barre, zone);
-  return { zone, vivant: () => root.dataset.session === id };
+  let pts = null;
+  const points = n => {
+    if (!pts) {
+      pts = el('div', 'points');
+      for (let i = 0; i < nbItems(); i++) pts.append(el('span', 'pt'));
+      barre.append(pts);
+    }
+    [...pts.children].forEach((d, i) => d.classList.toggle('fait', i < n));
+  };
+  return { zone, vivant: () => root.dataset.session === id, points };
 }
 
 export function message(S, texte) {
   S.zone.replaceChildren(el('p', 'info', texte));
+}
+
+// Session de nbItems() questions : renvoie la fonction à appeler après chaque réponse.
+export function suite(S, retour, relancer, suivant) {
+  let n = 0;
+  let bons = 0;
+  S.points(0);
+  return bon => {
+    n++;
+    if (bon) bons++;
+    S.points(n);
+    if (n >= nbItems()) return fin(S, retour, bons, relancer);
+    suivant();
+  };
+}
+
+// Fin de session : pas de récompense, juste un récapitulatif pour l'adulte
+export function fin(S, retour, bons, relancer) {
+  S.zone.replaceChildren();
+  const duo = el('div', 'duo');
+  const a = el('button', 'gros', 'Rejouer');
+  const m = el('button', 'gros', 'Menu');
+  a.onclick = relancer;
+  m.onclick = retour;
+  duo.append(a, m);
+  S.zone.append(
+    el('p', 'fin-titre', 'Session terminée'),
+    el('p', 'fin-score', `${bons} réussi${bons > 1 ? 's' : ''} sur ${nbItems()}`),
+    duo
+  );
+}
+
+// Un modèle (nœud DOM) et plusieurs cartes à toucher ; "bon" = indice de la bonne carte.
+export function cartes(S, modele, faces, bon, fini) {
+  S.zone.replaceChildren();
+  const m = el('div', 'modele');
+  m.append(modele);
+  const rang = el('div', 'choix');
+  let ferme = false;
+  const btns = faces.map((f, i) => {
+    const b = el('button', 'carte');
+    const p = el('div', 'photo face');
+    p.append(f);
+    b.append(p);
+    b.onclick = async () => {
+      if (ferme) return;
+      ferme = true;
+      const ok = i === bon;
+      await retourVisuel(ok);
+      if (!S.vivant()) return;
+      if (!ok) {
+        btns[bon].classList.add('bonne');
+        await attendre(1400);
+      }
+      if (S.vivant()) fini(ok);
+    };
+    rang.append(b);
+    return b;
+  });
+  S.zone.append(m, rang);
 }

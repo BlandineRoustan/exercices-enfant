@@ -1,35 +1,258 @@
-Images attendues (WebP ou JPG ou PNG, environ 300 px, nom sans accent) :
+Images attendues : WebP (ou JPG/PNG), environ 300 px, nom = mot sans accent.
+Un mot sans image utilise son emoji ; sans emoji, il n'est pas proposé.
 
-papa.webp          <- PAPA
-lama.webp          <- LAMA
-moto.webp          <- MOTO
-velo.webp          <- VÉLO
-bebe.webp          <- BÉBÉ
-lune.webp          <- LUNE
-robe.webp          <- ROBE
+=== À FOURNIR EN PRIORITÉ (pas d'emoji de secours) ===
 radis.webp         <- RADIS
 rat.webp           <- RAT
-sac.webp           <- SAC
-tomate.webp        <- TOMATE
-salade.webp        <- SALADE
 table.webp         <- TABLE
-livre.webp         <- LIVRE
-canard.webp        <- CANARD
-tortue.webp        <- TORTUE
-chat.webp          <- CHAT
-chou.webp          <- CHOU
-cheval.webp        <- CHEVAL
-chapeau.webp       <- CHAPEAU
-souris.webp        <- SOURIS
-poule.webp         <- POULE
-fourmi.webp        <- FOURMI
-lapin.webp         <- LAPIN
-pain.webp          <- PAIN
-main.webp          <- MAIN
-train.webp         <- TRAIN
-melon.webp         <- MELON
+mur.webp           <- MUR
+kilo.webp          <- KILO
+ane.webp           <- ÂNE
+ete.webp           <- ÉTÉ
+pirate.webp        <- PIRATE
+tapis.webp         <- TAPIS
+kaki.webp          <- KAKI
+jupe.webp          <- JUPE
 jardin.webp        <- JARDIN
-bateau.webp        <- BATEAU
-maison.webp        <- MAISON
-oiseau.webp        <- OISEAU
-champignon.webp    <- CHAMPIGNON
+moulin.webp        <- MOULIN
+chemin.webp        <- CHEMIN
+rideau.webp        <- RIDEAU
+bureau.webp        <- BUREAU
+armoire.webp       <- ARMOIRE
+miroir.webp        <- MIROIR
+chambre.webp       <- CHAMBRE
+lampe.webp         <- LAMPE
+tete.webp          <- TÊTE
+timbre.webp        <- TIMBRE
+compote.webp       <- COMPOTE
+nombre.webp        <- NOMBRE
+haricot.webp       <- HARICOT
+gomme.webp         <- GOMME
+tasse.webp         <- TASSE
+nappe.webp         <- NAPPE
+carre.webp         <- CARRÉ
+coffre.webp        <- COFFRE
+griffe.webp        <- GRIFFE
+coussin.webp       <- COUSSIN
+navet.webp         <- NAVET
+ficelle.webp       <- FICELLE
+paille.webp        <- PAILLE
+
+=== Emoji de secours disponible (image facultative) ===
+papa.webp          <- PAPA         👨
+maman.webp         <- MAMAN        👩
+lama.webp          <- LAMA         🦙
+moto.webp          <- MOTO         🏍️
+velo.webp          <- VÉLO         🚲
+bebe.webp          <- BÉBÉ         👶
+lune.webp          <- LUNE         🌙
+robe.webp          <- ROBE         👗
+sac.webp           <- SAC          🎒
+tomate.webp        <- TOMATE       🍅
+salade.webp        <- SALADE       🥗
+livre.webp         <- LIVRE        📖
+canard.webp        <- CANARD       🦆
+tortue.webp        <- TORTUE       🐢
+judo.webp          <- JUDO         🥋
+koala.webp         <- KOALA        🐨
+ski.webp           <- SKI          ⛷️
+zero.webp          <- ZÉRO         0️⃣
+zebre.webp         <- ZÈBRE        🦓
+lezard.webp        <- LÉZARD       🦎
+rose.webp          <- ROSE         🌹
+tulipe.webp        <- TULIPE       🌷
+lit.webp           <- LIT          🛏️
+bol.webp           <- BOL          🥣
+loup.webp          <- LOUP         🐺
+hibou.webp         <- HIBOU        🦉
+cafe.webp          <- CAFÉ         ☕
+de.webp            <- DÉ           🎲
+fee.webp           <- FÉE          🧚
+idee.webp          <- IDÉE         💡
+bras.webp          <- BRAS         💪
+jus.webp           <- JUS          🧃
+bus.webp           <- BUS          🚌
+cactus.webp        <- CACTUS       🌵
+ananas.webp        <- ANANAS       🍍
+avocat.webp        <- AVOCAT       🥑
+volcan.webp        <- VOLCAN       🌋
+ruban.webp         <- RUBAN        🎀
+banane.webp        <- BANANE       🍌
+lapin.webp         <- LAPIN        🐰
+matin.webp         <- MATIN        🌅
+sapin.webp         <- SAPIN        🎄
+dauphin.webp       <- DAUPHIN      🐬
+vin.webp           <- VIN          🍷
+pain.webp          <- PAIN         🍞
+main.webp          <- MAIN         ✋
+train.webp         <- TRAIN        🚆
+melon.webp         <- MELON        🍈
+citron.webp        <- CITRON       🍋
+mouton.webp        <- MOUTON       🐑
+savon.webp         <- SAVON        🧼
+bonbon.webp        <- BONBON       🍬
+pont.webp          <- PONT         🌉
+poumon.webp        <- POUMON       🫁
+cochon.webp        <- COCHON       🐷
+dragon.webp        <- DRAGON       🐉
+dindon.webp        <- DINDON       🦃
+maison.webp        <- MAISON       🏠
+oiseau.webp        <- OISEAU       🐦
+bateau.webp        <- BATEAU       ⛵
+chapeau.webp       <- CHAPEAU      🎩
+gateau.webp        <- GÂTEAU       🍰
+chateau.webp       <- CHÂTEAU      🏰
+drapeau.webp       <- DRAPEAU      🏁
+manteau.webp       <- MANTEAU      🧥
+marteau.webp       <- MARTEAU      🔨
+chameau.webp       <- CHAMEAU      🐪
+pinceau.webp       <- PINCEAU      🖌️
+cadeau.webp        <- CADEAU       🎁
+eau.webp           <- EAU          💧
+seau.webp          <- SEAU         🪣
+poire.webp         <- POIRE        🍐
+voiture.webp       <- VOITURE      🚗
+etoile.webp        <- ÉTOILE       ⭐
+noir.webp          <- NOIR         ⚫
+trois.webp         <- TROIS        3️⃣
+poing.webp         <- POING        👊
+raisin.webp        <- RAISIN       🍇
+chaise.webp        <- CHAISE       🪑
+fraise.webp        <- FRAISE       🍓
+lait.webp          <- LAIT         🥛
+balai.webp         <- BALAI        🧹
+vache.webp         <- VACHE        🐄
+cloche.webp        <- CLOCHE       🔔
+mouche.webp        <- MOUCHE       🪰
+bouche.webp        <- BOUCHE       👄
+douche.webp        <- DOUCHE       🚿
+peche.webp         <- PÊCHE        🍑
+crepe.webp         <- CRÊPE        🥞
+chocolat.webp      <- CHOCOLAT     🍫
+chemise.webp       <- CHEMISE      👔
+gare.webp          <- GARE         🚉
+tigre.webp         <- TIGRE        🐯
+gant.webp          <- GANT         🧤
+jambe.webp         <- JAMBE        🦵
+tambour.webp       <- TAMBOUR      🥁
+dent.webp          <- DENT         🦷
+vent.webp          <- VENT         💨
+enfant.webp        <- ENFANT       🧒
+elephant.webp      <- ÉLÉPHANT     🐘
+phoque.webp        <- PHOQUE       🦭
+photo.webp         <- PHOTO        📷
+montagne.webp      <- MONTAGNE     ⛰️
+cerise.webp        <- CERISE       🍒
+cinema.webp        <- CINÉMA       🎬
+girafe.webp        <- GIRAFE       🦒
+orange.webp        <- ORANGE       🍊
+fromage.webp       <- FROMAGE      🧀
+plage.webp         <- PLAGE        🏖️
+rouge.webp         <- ROUGE        🔴
+bougie.webp        <- BOUGIE       🕯️
+singe.webp         <- SINGE        🐒
+glace.webp         <- GLACE        🍦
+pouce.webp         <- POUCE        👍
+garcon.webp        <- GARÇON       👦
+glacon.webp        <- GLAÇON       🧊
+jaune.webp         <- JAUNE        🟡
+poule.webp         <- POULE        🐔
+fourmi.webp        <- FOURMI       🐜
+souris.webp        <- SOURIS       🐭
+chou.webp          <- CHOU         🥬
+chat.webp          <- CHAT         🐱
+cheval.webp        <- CHEVAL       🐴
+champignon.webp    <- CHAMPIGNON   🍄
+route.webp         <- ROUTE        🛣️
+soupe.webp         <- SOUPE        🍲
+foulard.webp       <- FOULARD      🧣
+trou.webp          <- TROU         🕳️
+fleur.webp         <- FLEUR        🌼
+peur.webp          <- PEUR         😨
+heure.webp         <- HEURE        🕐
+couleur.webp       <- COULEUR      🎨
+docteur.webp       <- DOCTEUR      🧑‍⚕️
+feu.webp           <- FEU          🔥
+bleu.webp          <- BLEU         🔵
+jeu.webp           <- JEU          🎮
+blanc.webp         <- BLANC        ⚪
+pasteque.webp      <- PASTÈQUE     🍉
+chevre.webp        <- CHÈVRE       🐐
+fete.webp          <- FÊTE         🎉
+fenetre.webp       <- FENÊTRE      🪟
+foret.webp         <- FORÊT        🌲
+porte.webp         <- PORTE        🚪
+arbre.webp         <- ARBRE        🌳
+cle.webp           <- CLÉ          🔑
+valise.webp        <- VALISE       🧳
+fusee.webp         <- FUSÉE        🚀
+robot.webp         <- ROBOT        🤖
+radio.webp         <- RADIO        📻
+video.webp         <- VIDÉO        📹
+piano.webp         <- PIANO        🎹
+ecole.webp         <- ÉCOLE        🏫
+kangourou.webp     <- KANGOUROU    🦘
+renard.webp        <- RENARD       🦊
+requin.webp        <- REQUIN       🦈
+panda.webp         <- PANDA        🐼
+masque.webp        <- MASQUE       🎭
+disque.webp        <- DISQUE       💿
+musique.webp       <- MUSIQUE      🎵
+brique.webp        <- BRIQUE       🧱
+cirque.webp        <- CIRQUE       🎪
+boutique.webp      <- BOUTIQUE     🏪
+pomme.webp         <- POMME        🍎
+carotte.webp       <- CAROTTE      🥕
+botte.webp         <- BOTTE        🥾
+ballon.webp        <- BALLON       ⚽
+balle.webp         <- BALLE        🎾
+bulle.webp         <- BULLE        🫧
+poisson.webp       <- POISSON      🐟
+marron.webp        <- MARRON       🟤
+chiffre.webp       <- CHIFFRE      🔢
+boussole.webp      <- BOUSSOLE     🧭
+casserole.webp     <- CASSEROLE    🥘
+caisse.webp        <- CAISSE       📦
+poussin.webp       <- POUSSIN      🐥
+saucisse.webp      <- SAUCISSE     🌭
+chaussure.webp     <- CHAUSSURE    👟
+bonnet.webp        <- BONNET       🧢
+carnet.webp        <- CARNET       📓
+poulet.webp        <- POULET       🍗
+bouquet.webp       <- BOUQUET      💐
+ballet.webp        <- BALLET       🩰
+gilet.webp         <- GILET        🦺
+robinet.webp       <- ROBINET      🚰
+poubelle.webp      <- POUBELLE     🗑️
+echelle.webp       <- ÉCHELLE      🪜
+chapelle.webp      <- CHAPELLE     ⛪
+chaussette.webp    <- CHAUSSETTE   🧦
+raquette.webp      <- RAQUETTE     🏸
+fourchette.webp    <- FOURCHETTE   🍴
+trompette.webp     <- TROMPETTE    🎺
+cassette.webp      <- CASSETTE     📼
+baguette.webp      <- BAGUETTE     🥖
+princesse.webp     <- PRINCESSE    👸
+terre.webp         <- TERRE        🌍
+verre.webp         <- VERRE        🥃
+tonnerre.webp      <- TONNERRE     🌩️
+antenne.webp       <- ANTENNE      📡
+fille.webp         <- FILLE        👧
+famille.webp       <- FAMILLE      👪
+coquille.webp      <- COQUILLE     🐚
+chenille.webp      <- CHENILLE     🐛
+gorille.webp       <- GORILLE      🦍
+feuille.webp       <- FEUILLE      🍃
+grenouille.webp    <- GRENOUILLE   🐸
+citrouille.webp    <- CITROUILLE   🎃
+medaille.webp      <- MÉDAILLE     🏅
+abeille.webp       <- ABEILLE      🐝
+oreille.webp       <- OREILLE      👂
+bouteille.webp     <- BOUTEILLE    🍾
+ail.webp           <- AIL          🧄
+soleil.webp        <- SOLEIL       ☀️
+ecureuil.webp      <- ÉCUREUIL     🐿️
+chevreuil.webp     <- CHEVREUIL    🦌
+bague.webp         <- BAGUE        💍
+vague.webp         <- VAGUE        🌊
+guitare.webp       <- GUITARE      🎸

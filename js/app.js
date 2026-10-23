@@ -1,35 +1,47 @@
 import { chargerDonnees, DATA } from './store.js';
 import { resoudre } from './images.js';
 import { exoSons, exoSyllabes, exoMots } from './exercices.js';
+import { exoCompter, exoQuantites, exoAjouter, exoEnlever, exoCompleter, exoComparer, exoSuite } from './maths.js';
 import { reglages } from './reglages.js';
-import { el, ROUE } from './ui.js';
+import { el, cadre, orienter, ROUE } from './ui.js';
 
 const root = document.getElementById('app');
 
+// Pour ajouter un thème ou un jeu : une ligne ici.
+const THEMES = [
+  { titre: 'LECTURE', jeux: [['SONS', exoSons], ['SYLLABES', exoSyllabes], ['MOTS', exoMots]] },
+  { titre: 'MATHS', jeux: [['COMPTER', exoCompter], ['QUANTITÉS', exoQuantites], ['AJOUTER', exoAjouter],
+    ['ENLEVER', exoEnlever], ['COMPLÉTER', exoCompleter], ['COMPARER', exoComparer], ['SUITES', exoSuite]] }
+];
+
+// Menu d'un thème : la page défile s'il y a beaucoup de jeux
+function menuTheme(theme) {
+  const S = cadre(root, accueil);
+  S.zone.classList.add('menu');
+  for (const [titre, f] of theme.jeux) {
+    const b = el('button', 'tuile', titre);
+    b.onclick = () => f(root, () => menuTheme(theme));
+    S.zone.append(b);
+  }
+}
+
 function accueil() {
+  orienter(null);
   root.dataset.session = '0'; // invalide tout exercice en cours
   root.replaceChildren();
   const page = el('div', 'accueil');
 
   const tuiles = el('div', 'tuiles');
-  for (const [titre, f] of [['SONS', exoSons], ['SYLLABES', exoSyllabes], ['MOTS', exoMots]]) {
-    const b = el('button', 'tuile', titre);
-    b.onclick = () => f(root, accueil);
+  for (const t of THEMES) {
+    const b = el('button', 'tuile', t.titre);
+    b.onclick = () => menuTheme(t);
     tuiles.append(b);
   }
 
-  // Réglages réservés au parent : appui long (1 seconde) sur la roue
   const roue = el('button', 'roue');
   roue.innerHTML = ROUE;
-  roue.setAttribute('aria-label', 'Réglages (appui long)');
-  let t;
-  const stop = () => { clearTimeout(t); roue.classList.remove('appui'); };
-  roue.addEventListener('pointerdown', () => {
-    roue.classList.add('appui');
-    t = setTimeout(() => { stop(); reglages(root, accueil); }, 1000);
-  });
-  ['pointerup', 'pointerleave', 'pointercancel'].forEach(e => roue.addEventListener(e, stop));
-  roue.addEventListener('contextmenu', e => e.preventDefault());
+  roue.setAttribute('aria-label', 'Réglages');
+  roue.onclick = () => reglages(root, accueil);
 
   const pied = el('div', 'pied');
   pied.append(roue, el('div', 'attrib', DATA.attribution || ''));

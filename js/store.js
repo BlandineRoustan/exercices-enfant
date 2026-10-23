@@ -7,7 +7,9 @@ const defauts = {
   patrons: ['CV'],        // 'CV' | 'VC' | 'CVC'
   confirmMots: true,      // retour visuel sur l'exercice des mots
   filtreSyl: 0,           // 0 = tous, sinon nombre de syllabes
-  filtreGraphie: ''       // '' = toutes, sinon id d'une graphie obligatoire dans le mot
+  filtreGraphie: '',      // '' = toutes, sinon id d'une graphie obligatoire dans le mot
+  forcerPaysage: true,    // exercice des mots : tente de passer l'écran en paysage
+  maxNombre: 10           // maths : nombres jusqu'à 3, 5 ou 10
 };
 
 const etat = JSON.parse(JSON.stringify(defauts));

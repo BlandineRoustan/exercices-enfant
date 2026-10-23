@@ -2,14 +2,14 @@ import { DATA } from './store.js';
 
 // list = [{ t: texte, type: 'voyelle'|'consonne'|'digramme'|'trigramme'|'muette' }]
 // palette = DATA.affichage.mots ou DATA.affichage.sons_et_syllabes
-// Deux digrammes/trigrammes consécutifs alternent entre les deux nuances de vert.
+// Deux digrammes/trigrammes/quadrigrammes consécutifs alternent entre les deux nuances de vert.
 function colorier(list, palette, classe) {
   const conteneur = document.createElement('span');
   conteneur.className = 'mot' + (classe ? ' ' + classe : '');
   let rang = 0;
   let precedentVert = false;
   for (const g of list) {
-    const vert = g.type === 'digramme' || g.type === 'trigramme';
+    const vert = g.type === 'digramme' || g.type === 'trigramme' || g.type === 'quadrigramme';
     rang = vert ? (precedentVert ? rang + 1 : 0) : 0;
     precedentVert = vert;
     const c = palette[g.type];

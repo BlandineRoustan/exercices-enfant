@@ -1,4 +1,4 @@
-import { DATA } from './store.js';
+import { DATA, jeu, noterScore } from './store.js';
 
 export const el = (tag, classe, texte) => {
   const e = document.createElement(tag);
@@ -103,6 +103,7 @@ export function suite(S, retour, relancer, suivant) {
 
 // Fin de session : pas de récompense, juste un récapitulatif pour l'adulte
 export function fin(S, retour, bons, relancer) {
+  if (jeu()) noterScore(jeu(), bons, nbItems());
   S.zone.replaceChildren();
   const duo = el('div', 'duo');
   const a = el('button', 'gros', 'Rejouer');
@@ -117,29 +118,43 @@ export function fin(S, retour, bons, relancer) {
   );
 }
 
+// Après une erreur : la bonne réponse est entourée et c'est l'enfant qui la touche pour passer à la suite.
+// "boutons" = tous les boutons de la question ; seul "bonBtn" reste actif.
+export function montrerBonne(boutons, bonBtn, suite) {
+  boutons.forEach(b => { b.onclick = null; });
+  bonBtn.classList.add('bonne');
+  bonBtn.onclick = () => { bonBtn.onclick = null; suite(); };
+}
+
 // Un modèle (nœud DOM) et plusieurs cartes à toucher ; "bon" = indice de la bonne carte.
+// Erreur : avec 3 cartes ou plus, la carte fausse est grisée et l'enfant choisit à nouveau ;
+// avec 2 cartes, la bonne est entourée et l'enfant la touche. Le score garde la première réponse.
 export function cartes(S, modele, faces, bon, fini) {
   S.zone.replaceChildren();
   const m = el('div', 'modele');
   m.append(modele);
   const rang = el('div', 'choix');
   let ferme = false;
+  let premier = null; // résultat de la première réponse
   const btns = faces.map((f, i) => {
     const b = el('button', 'carte');
     const p = el('div', 'photo face');
     p.append(f);
     b.append(p);
     b.onclick = async () => {
-      if (ferme) return;
+      if (ferme || b.classList.contains('ecartee')) return;
       ferme = true;
       const ok = i === bon;
+      if (premier === null) premier = ok;
       await retourVisuel(ok);
       if (!S.vivant()) return;
-      if (!ok) {
-        btns[bon].classList.add('bonne');
-        await attendre(1400);
+      if (ok) return fini(premier);
+      if (faces.length >= 3) {
+        b.classList.add('ecartee');
+        ferme = false;
+      } else {
+        montrerBonne(btns, btns[bon], () => fini(premier));
       }
-      if (S.vivant()) fini(ok);
     };
     rang.append(b);
     return b;

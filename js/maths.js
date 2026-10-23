@@ -22,32 +22,48 @@ function de(n) {
   return d;
 }
 
-// Une main avec k doigts levés (0 à 5) : index, majeur, annulaire, auriculaire, puis pouce
+// Une main droite, paume vers soi, avec k doigts levés (0 à 5), comptés à la française :
+// pouce, index, majeur, annulaire, auriculaire.
+// Silhouette d'un seul tenant : on dessine toutes les formes en contour épais, puis par-dessus en couleur de peau.
+const PEAU = '#F4C9A0';
+const TRAIT = '#9A6440';
+const PLI = '#D9A57A';
+// doigts (index → auriculaire) : centre x, largeur, longueur, inclinaison
+const DOIGTS = [[38, 15, 50, -9], [53, 16, 56, -2], [68, 15, 52, 5], [81, 13, 40, 12]];
 function main(k, miroir) {
-  const PEAU = '#F1C69C';
-  const TRAIT = '#A8744A';
-  const doigts = [[22, 12], [40, 6], [58, 12], [76, 22]]; // x, y du haut quand le doigt est levé
-  let s = `<g${miroir ? ' transform="translate(100 0) scale(-1 1)"' : ''} fill="${PEAU}" stroke="${TRAIT}" stroke-width="2.5" stroke-linejoin="round">`;
-  doigts.forEach(([x, y], i) => {
-    if (i < k && i < 4) s += `<rect x="${x - 7}" y="${y}" width="14" height="52" rx="7"/>`;
-    else s += `<rect x="${x - 7}" y="44" width="14" height="14" rx="7"/>`;
+  const leves = DOIGTS.map((_, i) => i + 1 < k);
+  const formes = [];
+  DOIGTS.forEach(([x, w, h, a], i) => {
+    if (leves[i]) formes.push(`<rect x="${x - w / 2}" y="${66 - h}" width="${w}" height="${h + 14}" rx="${w / 2}" transform="rotate(${a} ${x} 70)"/>`);
   });
-  s += '<rect x="14" y="48" width="72" height="46" rx="16"/>';
-  // masque la ligne de jonction entre la paume et les doigts levés
-  doigts.forEach(([x], i) => { if (i < k && i < 4) s += `<rect x="${x - 5.5}" y="46" width="11" height="6" fill="${PEAU}" stroke="none"/>`; });
-  s += k >= 5
-    ? '<rect x="2" y="46" width="14" height="38" rx="7" transform="rotate(-32 9 65)"/>'
-    : '<ellipse cx="30" cy="68" rx="9" ry="7"/>';
+  formes.push('<rect x="28" y="56" width="62" height="58" rx="22"/>'); // paume
+  formes.push('<rect x="38" y="104" width="42" height="16" rx="4"/>'); // poignet
+  if (k >= 1) formes.push('<rect x="18" y="44" width="16" height="54" rx="8" transform="rotate(-38 26 96)"/>'); // pouce levé
+  // la main occupe 108 de large : décalée de 8 pour laisser la place au pouce
+  let s = `<g transform="${miroir ? 'translate(108 0) scale(-1 1) ' : ''}translate(8 0)">`;
+  s += `<g fill="${TRAIT}" stroke="${TRAIT}" stroke-width="7" stroke-linejoin="round">${formes.join('')}</g>`;
+  s += `<g fill="${PEAU}">${formes.join('')}</g>`;
+  // doigts pliés : on voit les phalanges repliées en haut de la paume
+  DOIGTS.forEach(([x, w], i) => {
+    if (!leves[i]) s += `<rect x="${x - w / 2}" y="52" width="${w}" height="24" rx="${w / 2}" fill="${PEAU}" stroke="${TRAIT}" stroke-width="3"/>`;
+  });
+  // pouce plié : couché en travers de la paume
+  if (k < 1) s += `<rect x="30" y="80" width="40" height="15" rx="7.5" fill="${PEAU}" stroke="${TRAIT}" stroke-width="3"/>`;
+  // ongles discrets au bout des doigts levés
+  DOIGTS.forEach(([x, w, h, a], i) => {
+    if (leves[i]) s += `<rect x="${x - w / 2 + 3.5}" y="${66 - h + 3}" width="${w - 7}" height="9" rx="4" fill="${PLI}" transform="rotate(${a} ${x} 70)"/>`;
+  });
+  if (k >= 1) s += `<rect x="21.5" y="47" width="9" height="9" rx="4" fill="${PLI}" transform="rotate(-38 26 96)"/>`;
   return s + '</g>';
 }
 function doigts(n) {
   const d = el('span', 'dessin');
   if (n <= 5) {
-    d.innerHTML = `<svg viewBox="0 0 100 100" aria-hidden="true">${main(n, false)}</svg>`;
+    d.innerHTML = `<svg viewBox="0 0 108 124" aria-hidden="true">${main(n, false)}</svg>`;
   } else {
     d.classList.add('double');
     d.innerHTML =
-      `<svg viewBox="0 0 200 100" aria-hidden="true"><g>${main(5, true)}</g><g transform="translate(100 0)">${main(n - 5, false)}</g></svg>`;
+      `<svg viewBox="0 0 228 124" aria-hidden="true"><g>${main(5, true)}</g><g transform="translate(120 0)">${main(n - 5, false)}</g></svg>`;
   }
   return d;
 }
@@ -152,42 +168,38 @@ export function exoQuantites(root, retour) {
   });
 }
 
-/* ---------- AJOUTER : a objets + b objets, combien en tout ? ---------- */
+/* ---------- CALCULER : une opération écrite en chiffres, choisir le résultat ---------- */
+// Opérations proposées : réglage "operations" (+ et −). Résultat entre 0 et le maximum réglé, jamais négatif.
+// Pour ajouter × ou ÷ plus tard : une entrée dans OPERATIONS et une case dans les réglages.
 
-function calcul(objet, a, b) {
-  const c = el('div', 'calcul');
-  c.append(scene(objet, a, { petit: true }), el('span', 'signe', '+'), scene(objet, b, { petit: true }));
+const OPERATIONS = {
+  '+': max => { const a = alea(max) + 1; const b = 1 + alea(max - a + 1); return a + b <= max ? [a, b, a + b] : null; },
+  '-': max => { const a = 1 + alea(max); const b = 1 + alea(a); return [a, b, a - b]; }
+};
+const SIGNE = { '+': '+', '-': '−' };
+
+function operation(a, op, b) {
+  const c = el('div', 'operation');
+  c.append(el('span', null, `${a} ${SIGNE[op]} ${b} =`), el('span', 'num trou', '?'));
   return c;
 }
 
-export function exoAjouter(root, retour) {
-  jeu(root, retour, () => exoAjouter(root, retour), max => {
-    const obj = tireurObjets();
+export function exoCalculer(root, retour) {
+  jeu(root, retour, () => exoCalculer(root, retour), max => {
+    const ops = (get().operations || []).filter(o => OPERATIONS[o]);
+    const choix = ops.length ? ops : ['+'];
     let der = '';
     return () => {
-      let a, b;
-      do { a = 1 + alea(max - 1); b = 1 + alea(max - 1); } while (a + b > max || (a + '+' + b === der && max > 3));
-      der = a + '+' + b;
-      const total = a + b;
-      const nombres = shuffle([total, ...distracteurs(total, 1, max)]);
-      return { modele: calcul(obj(), a, b), faces: nombres.map(chiffre), bon: nombres.indexOf(total) };
-    };
-  });
-}
-
-/* ---------- ENLEVER : a objets dont b barrés, combien reste-t-il ? (jamais négatif) ---------- */
-
-export function exoEnlever(root, retour) {
-  jeu(root, retour, () => exoEnlever(root, retour), max => {
-    const obj = tireurObjets();
-    let der = '';
-    return () => {
-      let a, b;
-      do { a = 2 + alea(max - 1); b = 1 + alea(a); } while (a + '-' + b === der && max > 3);
-      der = a + '-' + b;
-      const reste = a - b; // 0 à a-1 : jamais négatif
-      const nombres = shuffle([reste, ...distracteurs(reste, 0, max)]);
-      return { modele: scene(obj(), a, { barres: b }), faces: nombres.map(chiffre), bon: nombres.indexOf(reste) };
+      let op, r, cle, essais = 0;
+      do {
+        op = pick(choix);
+        r = OPERATIONS[op](max);
+        cle = r && r[0] + op + r[1];
+      } while ((!r || (cle === der && essais < 30)) && essais++ < 60);
+      der = cle;
+      const [a, b, res] = r;
+      const nombres = shuffle([res, ...distracteurs(res, 0, max, new Set([a, b]))]);
+      return { modele: operation(a, op, b), faces: nombres.map(chiffre), bon: nombres.indexOf(res) };
     };
   });
 }
@@ -213,12 +225,26 @@ export function exoCompleter(root, retour) {
   });
 }
 
-/* ---------- COMPARER : où y en a-t-il le plus (ou le moins) ? ---------- */
+/* ---------- COMPARER : le plus, le moins, ou autant ---------- */
+// Réglages : "comparer" = 'objets' | 'nombres' | 'mixte' ; "autant" = propose aussi « autant ».
+// LE PLUS / LE MOINS : deux cartes (objets ou chiffres).
+// AUTANT : un modèle d'objets et trois cartes d'un autre objet ; trouver celle qui en a autant (il faut compter).
 
 export function exoComparer(root, retour) {
   jeu(root, retour, () => exoComparer(root, retour), max => {
     const obj = tireurObjets();
+    const st = get();
     return () => {
+      const nombres = st.comparer === 'nombres' || (st.comparer === 'mixte' && Math.random() < 0.5);
+      if (st.autant && !nombres && max >= 3 && Math.random() < 0.34) {
+        const n = 1 + alea(max);
+        const o = obj();
+        const cartesObj = obj();
+        const vals = shuffle([n, ...distracteurs(n, 1, max)]);
+        const modele = el('div', 'comparaison');
+        modele.append(el('span', 'consigne', '= AUTANT'), scene(o, n, { petit: true }));
+        return { modele, faces: vals.map(v => scene(cartesObj, v, { petit: true })), bon: vals.indexOf(n) };
+      }
       const x = 1 + alea(max);
       let y;
       do { y = 1 + alea(max); } while (y === x);
@@ -227,7 +253,8 @@ export function exoComparer(root, retour) {
       const o = obj();
       const gauche = Math.random() < 0.5 ? [x, y] : [y, x];
       const bon = plus ? (gauche[0] > gauche[1] ? 0 : 1) : (gauche[0] < gauche[1] ? 0 : 1);
-      return { modele: consigne, faces: gauche.map(n => scene(o, n, { petit: true })), bon };
+      const face = nombres ? chiffre : n => scene(o, n, { petit: true });
+      return { modele: consigne, faces: gauche.map(face), bon };
     };
   });
 }

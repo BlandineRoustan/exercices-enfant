@@ -1,7 +1,13 @@
-import { DATA, get, set, reinitialiser } from './store.js';
+import { DATA, get, set, reinitialiser, profil, profils, choisirProfil, ajouterProfil, renommerProfil, supprimerProfil } from './store.js';
 import { nbImages } from './images.js';
 import { sonsEl } from './render.js';
+import { progression } from './progression.js';
 import { el, cadre } from './ui.js';
+
+export const demanderNom = defaut => {
+  const nom = (prompt('Prénom de l\'enfant :', defaut) || '').trim().toUpperCase();
+  return nom.slice(0, 20);
+};
 
 // Boutons à choix unique
 function groupe(z, options, valeur, cb) {
@@ -23,6 +29,37 @@ export function reglages(root, accueil) {
   const z = S.zone;
   z.classList.add('defile');
   const st = get();
+
+  /* ---------- Profil : chaque enfant a ses réglages et son historique ---------- */
+  const p = profil();
+  z.append(el('h2', null, 'Profil : ' + p.nom));
+  z.append(el('p', 'petit', 'Les réglages ci-dessous ne concernent que ce profil. Tout reste sur ce téléphone.'));
+  const lp0 = el('div', 'ligne');
+  const prog = el('button', 'opt gras', 'Progression');
+  prog.onclick = () => progression(root, () => reglages(root, accueil));
+  const ren = el('button', 'opt', 'Renommer');
+  ren.onclick = () => {
+    const nom = demanderNom(p.nom);
+    if (nom) { renommerProfil(nom); reglages(root, accueil); }
+  };
+  const nouv = el('button', 'opt', 'Nouveau profil');
+  nouv.onclick = () => {
+    const nom = demanderNom('');
+    if (nom) { ajouterProfil(nom); reglages(root, accueil); }
+  };
+  lp0.append(prog, ren, nouv);
+  if (profils().length > 1) {
+    const sup = el('button', 'opt danger', 'Supprimer ce profil');
+    sup.onclick = () => {
+      if (confirm(`Supprimer le profil ${p.nom}, ses réglages et son historique ?`)) { supprimerProfil(); reglages(root, accueil); }
+    };
+    lp0.append(sup);
+  }
+  z.append(lp0);
+  if (profils().length > 1) {
+    z.append(el('p', 'petit', 'Changer de profil :'));
+    groupe(z, profils().map(x => [x.id, x.nom]), p.id, id => { choisirProfil(id); reglages(root, accueil); });
+  }
 
   /* ---------- Lecture : graphies maîtrisées ---------- */
   z.append(el('h2', null, 'Sons maîtrisés'));
@@ -121,15 +158,37 @@ export function reglages(root, accueil) {
   z.append(el('h2', null, 'Maths'));
   z.append(el('p', 'petit', 'Nombres jusqu\'à (le dé reste limité à 6) :'));
   groupe(z, [[3, '3'], [5, '5'], [10, '10']], st.maxNombre, v => set({ maxNombre: v }));
+  z.append(el('p', 'petit', 'Calculer : opérations proposées (au moins une) :'));
+  const lo = el('div', 'ligne');
+  const ops = new Set(st.operations);
+  for (const [o, txt] of [['+', '+ addition'], ['-', '− soustraction']]) {
+    const b = el('button', 'opt' + (ops.has(o) ? ' on' : ''), txt);
+    b.onclick = () => {
+      if (ops.has(o)) { if (ops.size === 1) return; ops.delete(o); } else ops.add(o);
+      b.classList.toggle('on', ops.has(o));
+      set({ operations: [...ops] });
+    };
+    lo.append(b);
+  }
+  z.append(lo);
+  z.append(el('p', 'petit', 'Comparer :'));
+  groupe(z, [['objets', 'Objets'], ['nombres', 'Nombres'], ['mixte', 'Les deux']], st.comparer, v => set({ comparer: v }));
+  z.append(el('p', 'petit', 'Comparer : proposer aussi « autant » (avec des objets) :'));
+  groupe(z, [[true, 'Oui'], [false, 'Non']], st.autant, v => set({ autant: v }));
+
+  /* ---------- Logique ---------- */
+  z.append(el('h2', null, 'Logique'));
+  z.append(el('p', 'petit', 'Motifs jusqu\'à (nombre de formes dans le motif) :'));
+  groupe(z, [[2, '2'], [3, '3'], [4, '4'], [6, '6']], st.motifMax, v => set({ motifMax: v }));
 
   /* ---------- Infos ---------- */
   z.append(el('h2', null, 'Images'));
   z.append(el('p', 'petit',
     `${nbImages()} image(s) trouvée(s) sur ${DATA.mots.length} mots. Un mot sans image utilise son emoji, ou n'est pas proposé s'il n'en a pas.`));
 
-  const reset = el('button', 'opt danger', 'Tout réinitialiser');
+  const reset = el('button', 'opt danger', 'Réinitialiser les réglages de ce profil');
   reset.onclick = () => {
-    if (confirm('Effacer les réglages et les sons maîtrisés ?')) { reinitialiser(); reglages(root, accueil); }
+    if (confirm('Effacer les réglages et les sons maîtrisés de ce profil ?')) { reinitialiser(); reglages(root, accueil); }
   };
   const ligneReset = el('div', 'ligne');
   ligneReset.append(reset);

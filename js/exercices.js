@@ -1,7 +1,7 @@
 import { DATA, get, maitrises, idDe } from './store.js';
 import { visuel, photo } from './images.js';
 import { sonsEl, motEl } from './render.js';
-import { el, pick, shuffle, attendre, cadre, message, retourVisuel, rond, suite, orienter } from './ui.js';
+import { el, pick, shuffle, cadre, message, retourVisuel, rond, suite, orienter, montrerBonne } from './ui.js';
 
 const AIDE = "Coche des sons dans les réglages (roue dentée de l'accueil).";
 
@@ -27,11 +27,9 @@ function ouiNon(S, cible, mot, oui, fini) {
     const bon = r === oui;
     await retourVisuel(bon);
     if (!S.vivant()) return;
-    if (!bon) {
-      (oui ? bo : bn).classList.add('bonne'); // on montre la bonne réponse
-      await attendre(1400);
-    }
-    if (S.vivant()) fini(bon);
+    if (bon) return fini(true);
+    // on montre la bonne réponse : l'enfant regarde, réfléchit et la touche pour continuer
+    montrerBonne([bo, bn], oui ? bo : bn, () => fini(false));
   };
   bo.onclick = () => rep(true);
   bn.onclick = () => rep(false);
@@ -50,7 +48,7 @@ function selection(S, cible, cartes, estBon, fini, multi, confirmer = true) {
     const b = el('button', 'carte');
     b.append(photo(m));
     b.onclick = () => {
-      if (ferme) return;
+      if (ferme || b.classList.contains('ecartee')) return;
       if (!multi) return repondre(new Set([m]));
       if (choisis.has(m)) choisis.delete(m); else choisis.add(m);
       b.classList.toggle('sel', choisis.has(m));
@@ -66,19 +64,25 @@ function selection(S, cible, cartes, estBon, fini, multi, confirmer = true) {
     S.zone.append(v);
   }
 
+  // Erreur : l'enfant recommence (choix unique : la carte fausse est grisée ; plusieurs : tout est décoché).
+  // Le score garde la première réponse.
+  let premier = null;
   async function repondre(ch) {
     if (ferme) return;
     ferme = true;
     const bon = cartes.every(m => ch.has(m) === estBon(m));
-    if (confirmer) {
-      await retourVisuel(bon);
-      if (!S.vivant()) return;
-      if (!bon) {
-        btns.forEach((b, i) => { if (estBon(cartes[i])) b.classList.add('bonne'); });
-        await attendre(1400);
-      }
+    if (premier === null) premier = bon;
+    if (!confirmer) return fini(bon);
+    await retourVisuel(bon);
+    if (!S.vivant()) return;
+    if (bon) return fini(premier);
+    if (multi) {
+      choisis.clear();
+      btns.forEach(b => b.classList.remove('sel'));
+    } else {
+      btns[cartes.indexOf([...ch][0])].classList.add('ecartee');
     }
-    if (S.vivant()) fini(bon);
+    ferme = false;
   }
 }
 

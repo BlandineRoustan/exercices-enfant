@@ -46,13 +46,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* ---------- Accueil et menus ---------- */
 .accueil { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-.tuiles { flex: 1; display: flex; flex-direction: column; gap: 16px; padding: 20px 16px 8px; justify-content: safe center; min-height: 0; overflow-y: auto; }
-.tuile {
-  flex: none; width: 100%; height: min(24dvh, 190px); min-height: 84px; border: none; border-radius: 28px;
-  background: var(--surface); color: var(--texte); box-shadow: 0 5px 0 var(--surface-ombre);
-  font-size: clamp(28px, 9vw, 52px); font-weight: 800; letter-spacing: 0.06em;
+.themes { flex: 1; display: flex; flex-direction: column; gap: 10px; padding: 18px 16px 8px; justify-content: safe center; min-height: 0; overflow-y: auto; }
+.theme { margin: 10px 0 0; font-size: clamp(28px, 8vw, 44px); font-weight: 800; letter-spacing: 0.08em; text-align: center; }
+.jeux { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+/* 3 jeux par ligne au plus : les 3 jeux de lecture tiennent sur une ligne */
+.jeu {
+  flex: 0 1 calc((100% - 20px) / 3); max-width: 190px; min-width: 0; padding: 16px 4px; border: none; border-radius: 20px;
+  background: var(--surface); color: var(--texte); box-shadow: 0 4px 0 var(--surface-ombre);
+  font-size: clamp(12px, 3.8vw, 20px); font-weight: 800; letter-spacing: 0.02em;
 }
-.tuile:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--surface-ombre); }
+.jeu:active, .qui-joue:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--surface-ombre); }
+.accueil.qui { justify-content: center; gap: 16px; padding: 16px; }
+.jeu.prenom { flex-basis: min(80vw, 320px); max-width: none; padding: 26px 18px; font-size: clamp(24px, 7vw, 36px); }
+.qui-joue { align-self: center; padding: 8px 18px; border: none; border-radius: 999px; background: var(--surface); color: var(--discret); box-shadow: 0 3px 0 var(--surface-ombre); font-size: 15px; font-weight: 800; letter-spacing: 0.05em; }
 
 .pied { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 4px 14px 10px; }
 .attrib { flex: 1; font-size: 10px; line-height: 1.3; color: #6F7A89; text-align: right; user-select: text; -webkit-user-select: text; }
@@ -99,6 +105,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .carte .photo { width: 100%; box-shadow: 0 4px 0 var(--papier-ombre); }
 .carte .photo .emoji { font-size: clamp(36px, 13vw, 84px); }
 .carte.sel { border-color: var(--choix); }
+.carte.ecartee { opacity: 0.25; filter: grayscale(1); }
 .bonne { outline: 8px solid var(--indice); outline-offset: 2px; animation: puls 0.5s ease 2; }
 @keyframes puls { 50% { transform: scale(1.06); } }
 
@@ -130,6 +137,28 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .num { width: min(15vw, 12dvh); aspect-ratio: 1; display: grid; place-items: center; border-radius: 16px; background: #DAD6CB; color: var(--encre); font-size: min(9vw, 7dvh); font-weight: 800; }
 .num.trou { background: transparent; border: 4px dashed #8E8A80; color: #8E8A80; }
 .carte .scene { --t: min(6vw, 5.2dvh, 24px); width: calc(var(--t) * 5.2); }
+
+/* Calculer, comparer « autant » */
+.operation { display: flex; align-items: center; gap: 14px; font-size: clamp(48px, 15vw, 96px); font-weight: 800; color: var(--encre); white-space: nowrap; }
+.operation .num { width: 1.2em; font-size: inherit; }
+.comparaison { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+
+/* Logique : formes de couleur */
+.sequence { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 100%; }
+.symbole { width: min(9vw, 7dvh); aspect-ratio: 1; display: grid; place-items: center; }
+.symbole svg { width: 100%; height: 100%; display: block; }
+.symbole.trou { border: 4px dashed #8E8A80; border-radius: 14px; color: #8E8A80; font-weight: 800; font-size: min(7vw, 5dvh); }
+.motif { display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; width: 100%; }
+.motif .symbole { width: 28%; }
+.motif.n2 .symbole { width: 42%; }
+.carte .photo.face > .symbole { width: 80%; }
+
+/* Progression (adulte) */
+.stat { margin: 10px 0; }
+.stat .entete { flex-wrap: wrap; }
+.graphe { width: 100%; height: auto; display: block; margin-top: 6px; background: var(--surface); border-radius: 10px; }
+.graphe rect { fill: var(--choix); }
+.graphe .mi { stroke: #4C5666; stroke-dasharray: 4 4; }
 
 /* Retour visuel : coche verte / croix rouge */
 .fb { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgba(29, 34, 43, 0.72); animation: pop 0.22s ease; }
@@ -168,7 +197,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .zone { flex-direction: row; justify-content: space-evenly; align-items: center; gap: 16px; padding: 6px 16px 10px; }
   .zone.defile { flex-direction: column; align-items: stretch; justify-content: flex-start; }
   .zone.menu { flex-direction: column; align-items: stretch; justify-content: safe center; }
-  .tuile { height: min(26dvh, 120px); min-height: 70px; font-size: clamp(26px, 5vw, 40px); }
+  .theme { font-size: min(9dvh, 5vw); margin-top: 4px; }
+  .jeu { padding: 10px 14px; font-size: min(5dvh, 3vw); }
   .cible { padding: 2px 18px 6px; }
   .cible .mot { font-size: min(34dvh, 22vw); }
   .cible .mot.mots { font-size: min(24dvh, 10vw); }
@@ -193,6 +223,8 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .consigne { font-size: min(18dvh, 8vw); }
   .num { width: min(14dvh, 8vw); font-size: min(8dvh, 4.5vw); }
   .carte .scene { --t: min(5dvh, 3vw); }
+  .operation { font-size: min(20dvh, 9vw); }
+  .symbole { width: min(11dvh, 6vw); }
   .fin-titre, .fin-score { flex-basis: 100%; }
 }
 

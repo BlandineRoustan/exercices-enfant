@@ -43,7 +43,7 @@ async function jouer(nom, lancer, cliquer) {
   let retours = 0;
   lancer(root, () => { retours++; });
   let items = 0, err = null;
-  for (let i = 0; i < 60; i++) {
+  for (let i = 0; i < 300; i++) { // le hasard met du temps à trouver (on recommence après une erreur)
     await pause();
     if (find(root, 'fin-titre').length) break;
     try { const fait = await cliquer(); if (fait) items++; } catch (e) { err = e; break; }
@@ -54,11 +54,12 @@ async function jouer(nom, lancer, cliquer) {
   const points = find(root, 'pt');
   console.log(nom.padEnd(34), 'items:', String(items).padStart(2), '| fin:', fini, '|', score, '| points faits:', points.filter(p => p._cls.has('fait')).length, '/', points.length, err ? '| ERREUR ' + err.stack : '');
 }
-const cliqueCarte = async () => { const c = find(root, 'carte'); if (!c.length) return false; await c[Math.floor(Math.random() * c.length)].onclick(); return true; };
-const cliqueRond = async () => { const r = find(root, 'rond').filter(x => !x._cls.has('valider')); if (!r.length) return false; await r[Math.floor(Math.random() * 2)].onclick(); return true; };
+const cliqueCarte = async () => { const c = find(root, 'carte').filter(x => x.onclick && !x._cls.has('ecartee')); if (!c.length) return false; await c[Math.floor(Math.random() * c.length)].onclick(); return true; };
+const cliqueRond = async () => { const r = find(root, 'rond').filter(x => !x._cls.has('valider') && x.onclick); if (!r.length) return false; await r[Math.floor(Math.random() * r.length)].onclick(); return true; };
 const cliqueMulti = async () => {
   const c = find(root, 'carte'); if (!c.length) return false;
-  c[0].onclick();
+  c.forEach(x => { if (Math.random() < 0.5) x.onclick(); });
+  c[Math.floor(Math.random() * c.length)].onclick();
   const v = find(root, 'valider'); await v[0].onclick(); return true;
 };
 
@@ -72,12 +73,36 @@ for (const max of [3, 5, 10]) {
   store.set({ maxNombre: max });
   await jouer(`Compter (max ${max})`, ma.exoCompter, cliqueCarte);
   await jouer(`Quantités (max ${max})`, ma.exoQuantites, cliqueCarte);
-  await jouer(`Ajouter (max ${max})`, ma.exoAjouter, cliqueCarte);
-  await jouer(`Enlever (max ${max})`, ma.exoEnlever, cliqueCarte);
+  for (const ops of [['+'], ['-'], ['+', '-']]) {
+    store.set({ operations: ops });
+    await jouer(`Calculer ${ops.join('')} (max ${max})`, ma.exoCalculer, cliqueCarte);
+  }
   await jouer(`Compléter (max ${max})`, ma.exoCompleter, cliqueCarte);
-  await jouer(`Comparer (max ${max})`, ma.exoComparer, cliqueCarte);
+  for (const comparer of ['objets', 'nombres', 'mixte']) {
+    store.set({ comparer, autant: true });
+    await jouer(`Comparer ${comparer} (max ${max})`, ma.exoComparer, cliqueCarte);
+  }
   await jouer(`Suites (max ${max})`, ma.exoSuite, cliqueCarte);
 }
+const lo = await import('../js/logique.js');
+for (const motifMax of [2, 3, 4, 6]) {
+  store.set({ motifMax });
+  await jouer(`Motifs (max ${motifMax})`, lo.exoMotif, cliqueCarte);
+  await jouer(`Continuer (max ${motifMax})`, lo.exoContinuer, cliqueCarte);
+}
+// profils : chaque enfant garde ses réglages et son historique
+store.choisirJeu('TEST');
+const p1 = store.profil().id;
+store.set({ maxNombre: 5 });
+store.ajouterProfil('B');
+console.log('profils : nouveau profil maxNombre =', store.get().maxNombre, '(attendu 10)');
+await jouer('Compter (profil B)', ma.exoCompter, cliqueCarte);
+console.log('profils : sessions notées pour B =', store.profil().scores.length, '(attendu 1)');
+store.choisirProfil(p1);
+console.log('profils : retour au 1er profil maxNombre =', store.get().maxNombre, '(attendu 5)');
+const pg = await import('../js/progression.js');
+pg.progression(root, () => {});
+console.log('progression : blocs', find(root, 'stat').length);
 // réglages : rendu sans erreur
 rg.reglages(root, () => {});
 console.log('réglages : boutons', find(root, 'opt').length, '| puces', find(root, 'puce').length);

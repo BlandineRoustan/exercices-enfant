@@ -127,8 +127,8 @@ function jeu(root, retour, relancer, fabrique) {
   const apres = suite(S, retour, relancer, () => suivant());
   const q = fabrique(max);
   const suivant = () => {
-    const { modele, faces, bon } = q();
-    cartes(S, modele, faces, bon, apres);
+    const { modele, faces, bon, empile } = q();
+    cartes(S, modele, faces, bon, apres, { empile });
   };
   suivant();
 }
@@ -237,7 +237,8 @@ export function exoComparer(root, retour) {
         const vals = shuffle([n, ...distracteurs(n, 1, max)]);
         const modele = el('div', 'comparaison');
         modele.append(el('span', 'consigne', '= AUTANT'), scene(o, n, { petit: true }));
-        return { modele, faces: vals.map(v => scene(cartesObj, v, { petit: true })), bon: vals.indexOf(n) };
+        // cartes empilées : chaque collection a toute la largeur, facile à compter
+        return { modele, faces: vals.map(v => scene(cartesObj, v, { petit: true })), bon: vals.indexOf(n), empile: true };
       }
       const x = 1 + alea(max);
       let y;
